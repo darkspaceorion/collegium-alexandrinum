@@ -1,0 +1,1117 @@
+<title>Collegium Alexandrinum</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: one reading column like a lecture-hall lectern, crest masthead, a bottom bar of three rooms. Dark-first, from the crest. */
+:root{
+  --ink:#04101A; --raised:#0A1B29; --sunk:#071521; --line:#1C2E40;
+  --gold:#D2A05A; --gold-hi:#F0D296; --gold-lo:#8A6A32; --on-gold:#04101A;
+  --text:#EDE3CC; --muted:#A99C80; --ok:#86B98F; --bad:#DE8A72;
+  --display:"Cinzel","Trajan Pro",Georgia,"Times New Roman",serif;
+  --body:"EB Garamond",Garamond,Georgia,"Times New Roman",serif;
+  --ui:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: light){ :root:not([data-theme="dark"]){
+  --ink:#F3ECDD; --raised:#FBF7EE; --sunk:#EAE1CE; --line:#D9CBAE;
+  --gold:#8A5F22; --gold-hi:#6A4612; --gold-lo:#B98A45; --on-gold:#FBF7EE;
+  --text:#14202C; --muted:#5F5848; --ok:#2E6A3B; --bad:#A3412A; color-scheme:light; } }
+:root[data-theme="light"]{
+  --ink:#F3ECDD; --raised:#FBF7EE; --sunk:#EAE1CE; --line:#D9CBAE;
+  --gold:#8A5F22; --gold-hi:#6A4612; --gold-lo:#B98A45; --on-gold:#FBF7EE;
+  --text:#14202C; --muted:#5F5848; --ok:#2E6A3B; --bad:#A3412A; color-scheme:light; }
+
+*{box-sizing:border-box}
+html,body{min-height:100%}
+body{background:var(--ink);color:var(--text);font-family:var(--body);font-size:19px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0 calc(88px + env(safe-area-inset-bottom,0px));}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--ink)}
+.wrap{max-width:720px;margin:0 auto}
+a{color:var(--gold-hi)}
+h1,h2,h3{font-family:var(--display);font-weight:600;letter-spacing:.06em;text-wrap:balance;margin:0;color:var(--gold-hi)}
+h1{font-size:1.65rem;line-height:1.2}
+h2{font-size:1.2rem;line-height:1.3}
+h3{font-size:1rem;letter-spacing:.1em}
+p{margin:0}
+.eyebrow{font-family:var(--display);font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.muted{color:var(--muted)}
+.small{font-size:.86rem}
+.stack{display:flex;flex-direction:column;gap:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.rule{border:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold-lo),transparent);margin:6px 0}
+.diamond{display:flex;align-items:center;gap:10px;color:var(--gold);font-size:.7rem}
+.diamond::before,.diamond::after{content:"";flex:1;height:1px;background:var(--gold-lo)}
+
+.mast{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;padding-block:18px 10px}
+.mast img{width:88px;height:62px;object-fit:cover;border:1px solid var(--gold-lo);border-radius:2px}
+.mast .name{font-family:var(--display);font-weight:700;font-size:1.25rem;letter-spacing:.1em;color:var(--gold-hi);line-height:1.15}
+.mast .motto{font-family:var(--display);font-size:.62rem;letter-spacing:.26em;color:var(--gold);margin-top:4px}
+
+.panel{background:var(--raised);border:1px solid var(--line);border-radius:4px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.panel.seal{border-color:var(--gold-lo);background:linear-gradient(180deg,var(--raised),var(--sunk))}
+.agent{display:inline-flex;gap:8px;align-items:baseline;font-family:var(--display);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.agent b{color:var(--gold-hi);font-weight:700}
+
+button{font:inherit;cursor:pointer}
+.btn{font-family:var(--display);font-size:.8rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;
+  padding:12px 18px;min-height:46px;border-radius:3px;border:1px solid var(--gold);background:var(--gold);color:var(--on-gold)}
+.btn:hover{background:var(--gold-hi);border-color:var(--gold-hi)}
+.btn.ghost{background:transparent;color:var(--gold-hi)}
+.btn.ghost:hover{background:var(--sunk)}
+.btn.quiet{border-color:var(--line);background:transparent;color:var(--muted)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible,.choice:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible,.nav button:focus-visible,.lrow:focus-visible{outline:2px solid var(--gold-hi);outline-offset:2px}
+textarea,input[type=text],select{width:100%;font-family:var(--body);font-size:1.05rem;color:var(--text);background:var(--sunk);
+  border:1px solid var(--line);border-radius:3px;padding:12px}
+textarea{min-height:96px;resize:vertical;line-height:1.45}
+label{font-family:var(--display);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+
+.chat{display:flex;flex-direction:column;gap:12px}
+.msg{max-width:92%;padding:12px 14px;border-radius:4px;white-space:pre-wrap;min-width:0;overflow-wrap:anywhere}
+.msg.them{background:var(--raised);border:1px solid var(--line);align-self:flex-start}
+.msg.me{background:var(--sunk);border:1px solid var(--gold-lo);align-self:flex-end}
+.thinking{font-style:italic;color:var(--muted)}
+.quill{display:flex;align-items:center;gap:12px;font-style:italic;color:var(--muted);padding:6px 0}
+.quill svg{width:36px;height:36px;color:var(--gold);flex:none}
+@media (prefers-reduced-motion: no-preference){
+  .quill .pen{animation:quill 1.4s ease-in-out infinite;transform-origin:8px 30px}
+  .quill .ink{stroke-dasharray:22;animation:ink 1.4s linear infinite}
+  .quill .dots i{animation:dot 1.4s infinite;font-style:normal}
+  .quill .dots i:nth-child(2){animation-delay:.2s} .quill .dots i:nth-child(3){animation-delay:.4s}
+  @keyframes quill{0%,100%{transform:translateX(0) rotate(0)}50%{transform:translateX(5px) rotate(-6deg)}}
+  @keyframes ink{from{stroke-dashoffset:22}to{stroke-dashoffset:0}}
+  @keyframes dot{0%,100%{opacity:.2}40%{opacity:1}}
+}
+
+.chip{display:inline-block;font-family:var(--ui);font-size:.72rem;letter-spacing:.04em;padding:3px 9px;border-radius:99px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.chip.gold{border-color:var(--gold-lo);color:var(--gold-hi)}
+.chip.ok{border-color:var(--ok);color:var(--ok)}
+.chip.bad{border-color:var(--bad);color:var(--bad)}
+
+/* map path */
+.path{display:flex;flex-direction:column}
+.block{display:grid;grid-template-columns:52px 1fr;gap:14px}
+.block .num{display:flex;flex-direction:column;align-items:center}
+.block .num span{font-family:var(--display);font-weight:700;color:var(--gold-hi);width:44px;height:44px;display:grid;place-items:center;border:1px solid var(--gold-lo);border-radius:50%;background:var(--raised);font-size:.85rem}
+.block .num i{flex:1;width:1px;background:var(--gold-lo);min-height:18px}
+.block:last-child .num i{visibility:hidden}
+.block .body{padding-bottom:22px;min-width:0;display:flex;flex-direction:column;gap:6px}
+.block[data-status="locked"] .num span{color:var(--muted);border-color:var(--line)}
+.block[data-status="locked"] .body{opacity:.6}
+.block[data-status="passed"] .num span{background:var(--gold);color:var(--on-gold);border-color:var(--gold)}
+.lessons{display:flex;flex-direction:column;border-top:1px solid var(--line);margin-top:4px}
+.lrow{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);color:inherit;padding:10px 0;width:100%}
+.lrow .mk{width:22px;height:22px;transform:rotate(45deg);border:1px solid var(--gold-lo);justify-self:center}
+.lrow[data-st="passed"] .mk{background:var(--gold);border-color:var(--gold)}
+.lrow[data-st="reading"] .mk,.lrow[data-st="read"] .mk{background:linear-gradient(135deg,var(--gold) 50%,transparent 50%)}
+.lrow:disabled{opacity:.55;cursor:default}
+.lrow .t{min-width:0}
+.choices{display:grid;gap:10px}
+.choice{text-align:left;background:var(--sunk);border:1px solid var(--line);border-radius:3px;padding:12px;color:inherit}
+.choice:hover{border-color:var(--gold)}
+.choice[aria-pressed="true"]{border-color:var(--gold);background:var(--raised)}
+
+/* reading */
+.prose{min-width:0;overflow-wrap:anywhere}
+.prose > *{margin:0 0 .8em}
+.prose > *:last-child{margin-bottom:0}
+.prose h1,.prose h2,.prose h3,.prose h4{font-family:var(--display);color:var(--gold-hi);font-size:1rem;letter-spacing:.08em}
+.prose code{font-family:ui-monospace,Consolas,monospace;font-size:.85em;background:var(--sunk);padding:1px 5px;border-radius:3px}
+.prose pre{overflow-x:auto;background:var(--sunk);padding:12px;border-radius:3px}
+.prose pre code{background:none;padding:0}
+.prose ul,.prose ol{padding-left:1.3em}
+.prose li{margin-bottom:.3em}
+.prose blockquote{border-left:2px solid var(--gold-lo);margin-left:0;padding-left:12px;color:var(--muted)}
+.prose table{border-collapse:collapse;display:block;overflow-x:auto}
+.prose td,.prose th{border:1px solid var(--line);padding:4px 8px}
+.progress{display:flex;gap:4px}
+.progress button{flex:1;height:6px;border:0;border-radius:3px;background:var(--line);padding:0;min-width:0}
+.progress button.on{background:var(--gold)}
+.progress button.here{background:var(--gold-hi)}
+.diagram{background:var(--sunk);border:1px solid var(--line);border-radius:4px;padding:14px;overflow-x:auto;text-align:center;min-height:60px}
+.diagram svg{max-width:100%;height:auto}
+.diagram .wait{font-style:italic;color:var(--muted);font-size:.9rem}
+.check{border:1px solid var(--gold-lo);border-radius:4px;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--sunk)}
+.deeper{border-left:2px solid var(--gold);padding-left:14px}
+details{border-top:1px solid var(--line);padding-top:10px}
+summary{cursor:pointer;font-family:var(--display);font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+.sources li{margin-bottom:6px}
+.secnav{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+.ladder{display:flex;gap:6px}
+.rung{flex:1;text-align:center;font-family:var(--display);font-size:.72rem;letter-spacing:.12em;padding:6px 0;border:1px solid var(--line);border-radius:2px;color:var(--muted)}
+.rung.on{border-color:var(--gold);color:var(--on-gold);background:var(--gold)}
+.feedback{border-left:3px solid var(--gold-lo);padding-left:12px}
+.feedback.ok{border-color:var(--ok)}
+.feedback.bad{border-color:var(--bad)}
+
+.card{min-height:220px;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:26px 20px;border:1px solid var(--gold-lo);border-radius:4px;background:var(--raised);
+  background-image:radial-gradient(circle at 50% 0,rgba(210,160,90,.08),transparent 60%)}
+.card .front{font-size:1.25rem;line-height:1.4}
+.grades{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.grades .btn{padding:10px 4px;font-size:.7rem;letter-spacing:.08em;display:flex;flex-direction:column;align-items:center;gap:2px}
+.grades .btn small{font-family:var(--ui);letter-spacing:0;text-transform:none;font-weight:400;opacity:.8}
+.stat{display:flex;flex-direction:column;gap:2px}
+.stat b{font-family:var(--display);font-size:1.6rem;color:var(--gold-hi);font-variant-numeric:tabular-nums}
+
+.notice{padding:12px 14px;border:1px solid var(--line);border-radius:3px;background:var(--sunk);font-size:.95rem}
+.notice.warn{border-color:var(--bad)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--raised);border:1px solid var(--gold);color:var(--text);padding:10px 16px;border-radius:3px;z-index:20;max-width:calc(100% - 32px);font-size:.95rem}
+
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:15;background:var(--sunk);border-top:1px solid var(--gold-lo);
+  padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav .in{max-width:720px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr)}
+.nav button{background:none;border:0;color:var(--muted);font-family:var(--display);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;padding:14px 4px;min-height:60px;display:flex;flex-direction:column;align-items:center;gap:4px}
+.nav button[aria-current="page"]{color:var(--gold-hi)}
+.nav button[aria-current="page"]::before{content:"";width:6px;height:6px;transform:rotate(45deg);background:var(--gold)}
+.nav .count{font-family:var(--ui);font-size:.7rem;letter-spacing:0;color:var(--gold)}
+.foot{text-align:center;padding-block:28px 8px;display:flex;flex-direction:column;gap:4px}
+.foot .l{font-family:var(--display);font-size:.62rem;letter-spacing:.3em;color:var(--gold)}
+.foot .e{font-size:.8rem;font-style:italic;color:var(--muted)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{font-family:var(--display);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;padding:8px 12px;border:1px solid var(--line);border-radius:2px;background:none;color:var(--muted)}
+.tabs button[aria-pressed="true"]{border-color:var(--gold);color:var(--gold-hi)}
+.list{display:flex;flex-direction:column}
+.list > div{padding:10px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+@media (prefers-reduced-motion: no-preference){ .fade{animation:fade .35s ease both} @keyframes fade{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}} }
+</style>
+
+<!--AGENTS--><!--/AGENTS-->
+
+<div class="wrap">
+  <header class="mast">
+    <img src="__CREST__" alt="Collegium Alexandrinum crest: a four-column temple under a gold arc">
+    <div>
+      <div class="name">Collegium Alexandrinum</div>
+      <div class="motto">ALEXANDRIA &middot; SAPIENTIA &middot; HUMANITAS</div>
+    </div>
+  </header>
+  <hr class="rule">
+  <main id="main" class="stack" style="padding-block:18px 0"></main>
+  <footer class="foot">
+    <div class="l">SAPIENTIA SINE FINIBUS</div>
+    <div class="e">Wisdom without boundaries</div>
+    <div class="l" style="margin-top:10px">EX TENEBRIS AD LUCEM</div>
+    <div class="e">From darkness to light</div>
+  </footer>
+</div>
+<nav class="nav" aria-label="Rooms"><div class="in" id="nav"></div></nav>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script>
+"use strict";
+const APP_URL = "__APP_URL__";
+const CAL = "Google Calendar";
+const MERMAID_SRC = "https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js";
+const AGENTS = (() => { try { return JSON.parse(document.getElementById("agents").textContent); } catch (e) { return {}; } })();
+const ROMAN = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI"];
+const TITLES = {
+  assessor: ["Assessor", "finds your why and your level"],
+  cartographer: ["Cartographer", "maps and writes the curriculum"],
+  scholar: ["Scholar", "tutors"],
+  proctor: ["Proctor", "examines"],
+  registrar: ["Registrar", "keeps the record"],
+  dialectician: ["Dialectician", "questions, never answers"],
+  logician: ["Logician", "checks your reasoning"],
+  auditor: ["Auditor", "hears you explain it back"],
+  diagnostician: ["Diagnostician", "finds the root gap"],
+  challenger: ["Challenger", "spars with you"],
+};
+const DEPTH = { crash: "Crash course", standard: "Standard", deep: "Deep dive" };
+
+const S = {
+  db: null, user: null, sample: null, mcp: null, downloads: null, uid: null,
+  ready: false, school: null, courses: [], cards: [], blocks: {}, blockSubs: {}, lessons: {}, lessonSubs: {},
+  view: "atrium", p: {}, busy: false, err: "", drafts: {}, stream: {}, reveal: {}, svg: {},
+  exam: null, lq: null, review: null, regTab: "results", results: null, notes: null, usage: null, asked: {},
+};
+
+/* ---------- helpers ---------- */
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+function md(s) {
+  s = String(s ?? "");
+  let h;
+  try { if (window.marked && window.DOMPurify) h = DOMPurify.sanitize(marked.parse(s)); } catch (e) {}
+  if (h == null) h = esc(s).replace(/\n/g, "<br>");
+  // Mermaid fences inside prose become diagram slots, drawn after render.
+  return h.replace(/<pre><code class="language-mermaid">([\s\S]*?)<\/code><\/pre>/g, (m, src) => diagramSlot(unesc(src)));
+}
+const unesc = (s) => s.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, "&");
+if (window.DOMPurify) DOMPurify.addHook("afterSanitizeAttributes", (n) => { if (n.tagName === "A") { n.setAttribute("target", "_blank"); n.setAttribute("rel", "noopener"); } });
+const pad = (n) => String(n).padStart(2, "0");
+const today = (d = new Date()) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+function addDays(ds, n) { const [y, m, d] = ds.split("-").map(Number); return today(new Date(y, m - 1, d + n)); }
+function niceDate(ds) { const [y, m, d] = ds.split("-").map(Number); return new Date(y, m - 1, d).toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" }); }
+const nowIso = () => new Date().toISOString();
+const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 28) || "course";
+const byOrder = (a, b) => (a.order || 0) - (b.order || 0);
+let toastT;
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => (t.hidden = true), 4200); }
+function agentTag(k) { const t = TITLES[k] || [k, ""]; return `<span class="agent"><b>${esc(t[0])}</b> ${esc(t[1])}</span>`; }
+function hash(s) { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
+
+/* ---------- diagrams (Mermaid, drawn by the page and cached) ---------- */
+function diagramSlot(src) {
+  src = String(src || "").trim(); if (!src) return "";
+  const k = hash(src);
+  if (S.svg[k]) return `<div class="diagram" role="img" aria-label="Diagram">${S.svg[k]}</div>`;
+  return `<div class="diagram" data-k="${k}" data-src="${esc(src)}"><span class="wait">Drawing the diagram...</span></div>`;
+}
+let mermaidP = null;
+function loadMermaid() {
+  if (window.mermaid) return Promise.resolve(window.mermaid);
+  if (mermaidP) return mermaidP;
+  mermaidP = new Promise((res, rej) => { const s = document.createElement("script"); s.src = MERMAID_SRC; s.onload = () => res(window.mermaid); s.onerror = rej; document.head.appendChild(s); })
+    .then((m) => {
+      const cs = getComputedStyle(document.documentElement); const v = (n) => cs.getPropertyValue(n).trim();
+      m.initialize({ startOnLoad: false, securityLevel: "strict", theme: "base", fontFamily: "EB Garamond, Georgia, serif",
+        themeVariables: { background: v("--sunk"), primaryColor: v("--raised"), primaryTextColor: v("--text"), primaryBorderColor: v("--gold"), lineColor: v("--gold"), secondaryColor: v("--sunk"), tertiaryColor: v("--ink"), textColor: v("--text"), noteBkgColor: v("--raised"), noteTextColor: v("--text"), fontSize: "15px" } });
+      return m;
+    });
+  return mermaidP;
+}
+async function drawDiagrams() {
+  const slots = [...document.querySelectorAll(".diagram[data-src]")];
+  if (!slots.length) return;
+  let m; try { m = await loadMermaid(); } catch (e) { slots.forEach((el) => fallbackDiagram(el)); return; }
+  for (const el of slots) {
+    const k = el.dataset.k, src = el.dataset.src;
+    if (!S.svg[k]) { try { const r = await m.render("mm" + k + Math.random().toString(36).slice(2, 6), src); S.svg[k] = r.svg; } catch (e) { S.svg[k] = null; } }
+    document.querySelectorAll(`.diagram[data-k="${k}"]`).forEach((n) => { if (S.svg[k]) { n.innerHTML = S.svg[k]; n.removeAttribute("data-src"); n.setAttribute("role", "img"); } else fallbackDiagram(n); });
+  }
+}
+function fallbackDiagram(el) { el.innerHTML = `<details><summary>Diagram could not be drawn here. Show its outline</summary><pre style="text-align:left;white-space:pre-wrap;margin-top:8px">${esc(el.dataset.src || "")}</pre></details>`; el.removeAttribute("data-src"); }
+
+/* ---------- data refs ---------- */
+const root = () => S.db.doc(`data/users/${S.uid}/school`);
+const col = (name) => root().collection(name);
+const blocksCol = (cid) => col("courses").doc(cid).collection("blocks");
+const lessonsCol = (cid, bid) => blocksCol(cid).doc(bid).collection("lessons");
+const course = (cid) => S.courses.find((c) => c.id === cid);
+const blockOf = (cid, bid) => (S.blocks[cid] || []).find((b) => b.id === bid);
+const settings = () => Object.assign({ routing: "confirm", reminderHour: 8, reminders: true }, S.school?.settings || {});
+const sortedBlocks = (cid) => (S.blocks[cid] || []).slice().sort(byOrder);
+function lessonsOf(cid, bid) {
+  const b = blockOf(cid, bid); const all = (S.lessons[cid + "/" + bid] || []).slice().sort(byOrder);
+  return all.filter((l) => !l.option || (b && l.option === b.chosen));
+}
+const lessonOf = (cid, bid, lid) => (S.lessons[cid + "/" + bid] || []).find((l) => l.id === lid);
+function blockPack(cid, bid) {
+  const b = blockOf(cid, bid) || {}; const p = Object.assign({}, b.pack || {});
+  const ls = lessonsOf(cid, bid);
+  p.lesson_key_points = ls.map((l) => ({ lesson: l.title, key_points: l.key_points || [] }));
+  return p;
+}
+const dueCards = () => S.cards.filter((c) => c.status !== "archived" && (c.due || "") <= today()).sort((a, b) => (a.due || "").localeCompare(b.due || ""));
+const liveCards = () => S.cards.filter((c) => c.status !== "archived");
+
+async function ensureSchool() {
+  if (S.school) return;
+  const snap = await root().get();
+  if (!snap.exists) await root().set({ createdAt: nowIso(), settings: settings() });
+}
+
+/* ---------- agents (Claude calls) ---------- */
+function agentErr(e) {
+  const c = e && e.code;
+  if (c === "not_granted" || c === "sampling_disabled") return "Claude is not allowed for this page. Open the page menu and allow Claude, then try again.";
+  if (c === "rate_limited") return "Claude is busy or your usage limit is reached. Wait a little, then try again.";
+  if (c === "invalid_json") return "The agent's answer came back garbled. Try again.";
+  if (c === "session_expired") return "Your claude.ai session expired. Sign in again.";
+  if (c === "prompt_too_large") return "That was too much text for one call. Try a shorter answer.";
+  if (c === "cancelled") return "";
+  return "The agent could not answer just now. Try again.";
+}
+function brief(agent, mode, data) {
+  return `${AGENTS[agent] || ""}\n\n---\nMODE: ${mode}\nTODAY: ${today()}\n\nINPUT (JSON):\n${JSON.stringify(data, null, 1)}\n\nFollow the instructions for MODE "${mode}" exactly.`;
+}
+/* ---------- usage meter ---------- */
+// The page's link to Claude reports no token counts, so each call is logged as an estimate:
+// about 4 characters per token, thinking not included. One small doc per call in school/usage.
+const NOT_SENT = ["not_granted", "sampling_disabled", "session_expired", "prompt_too_large", "rate_limited"];
+const estTok = (s) => Math.ceil(String(s || "").length / 4);
+function meter(agent, mode, input, out, tier, err) {
+  if (!S.db || !S.uid) return;
+  if (err && NOT_SENT.includes(err.code)) return;
+  const inText = typeof input === "string" ? input : input.map((t) => t.content).join("\n");
+  col("usage").add({ at: nowIso(), day: today(), agent, mode, cid: (S.p && S.p.cid) || null, tier: tier || "default",
+    ok: !err, code: (err && err.code) || null, inTok: estTok(inText), outTok: estTok(out) }).catch(() => {});
+  S.usage = null;
+}
+async function askJson(agent, mode, data, tier) {
+  if (!S.sample) throw { code: "not_granted" };
+  const input = brief(agent, mode, data);
+  try {
+    const r = await S.sample.json(input, { modelTier: tier || "default", cache: false });
+    meter(agent, mode, input, JSON.stringify(r), tier); return r;
+  } catch (e) { meter(agent, mode, input, e && e.text, tier, e || {}); throw e; }
+}
+// While an agent is writing: a small quill and dots, so the student knows it is working.
+const THINK = "Thinking...";
+const quill = (who) => `<div class="quill" role="status"><svg viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="pen"><path d="M31 3C21 6 13 15 9 26l2 1c5-8 12-15 20-24z"/><path d="M31 3 8 30"/></g><path class="ink" d="M3 33q3-3 6 0t6 0 6 0"/></svg><span>${who} is writing<span class="dots"><i>.</i><i>.</i><i>.</i></span></span></div>`;
+const out = (t, who = "The Scholar") => !t || t === THINK ? quill(who) : md(t);
+async function streamTo(key, agent, mode, data, tier) {
+  if (!S.sample) { S.stream[key] = agentErr({ code: "not_granted" }); render(); return; }
+  S.busy = true; S.stream[key] = THINK; render();
+  let ok = false;
+  const input = brief(agent, mode, data);
+  try {
+    const r = await S.sample(input, { modelTier: tier || "default", cache: false,
+      onText: ({ text }) => { S.stream[key] = text; const el = document.getElementById(`out-${key}`); if (el) { el.innerHTML = out(text); } } });
+    ok = true; meter(agent, mode, input, r.text, r.modelTierApplied || tier);
+  } catch (e) { S.stream[key] = (e && e.text) || agentErr(e); meter(agent, mode, input, e && e.text, tier, e || {}); }
+  finally { S.busy = false; render(); }
+  return ok;
+}
+const student = (c) => Object.assign({}, c.assessment || {});
+
+/* ---------- the Dean (router) ---------- */
+function curBlock(cid) { return sortedBlocks(cid).find((b) => b.status !== "passed" && b.status !== "locked") || null; }
+function nextLesson(cid, b) { return lessonsOf(cid, b.id).find((l) => l.status !== "passed") || null; }
+const RULES = [
+  { id: "cards-due", v: 1, agent: "registrar", when: () => dueCards().length > 0, label: () => `Review ${dueCards().length} flash card${dueCards().length === 1 ? "" : "s"} due today`, go: () => ["review", {}] },
+  { id: "assessing", v: 1, agent: "assessor", when: (c) => c.status === "assessing", label: () => "Continue your interview", go: (c) => ["enrol", { cid: c.id }] },
+  { id: "awaiting", v: 1, agent: "cartographer", when: (c) => c.status === "awaiting_curriculum", label: () => "Your curriculum is waiting to be built in NEXUS", go: (c) => ["course", { cid: c.id }] },
+  { id: "choose", v: 1, agent: "cartographer", when: (c, b) => b && b.options && !b.chosen, label: (c, b) => `Choose your path for "${b.title}"`, go: (c) => ["course", { cid: c.id }] },
+  { id: "lesson-retake", v: 1, agent: "scholar", when: (c, b, l) => l && l.status === "read" && (l.misses || []).length, label: (c, b, l) => `Revisit "${l.title}" and retake its quiz`, go: (c, b, l) => ["lesson", { cid: c.id, bid: b.id, lid: l.id, stage: "end" }] },
+  { id: "lesson", v: 1, agent: "scholar", when: (c, b, l) => l && l.status !== "passed", label: (c, b, l) => `${l.status === "reading" ? "Continue" : "Lesson"}: "${l.title}" (${l.minutes || 20} min)`, go: (c, b, l) => ["lesson", { cid: c.id, bid: b.id, lid: l.id }] },
+  { id: "loading", v: 1, agent: "scholar", when: (c, b, l, ll) => b && b.status === "ready" && !ll, label: (c, b) => `Continue Block ${ROMAN[b.order] || b.order}: "${b.title}"`, go: (c) => ["course", { cid: c.id }] },
+  { id: "examine", v: 1, agent: "proctor", when: (c, b) => b && b.status === "taught", label: (c, b) => `Block examination: "${b.title}"`, go: (c, b) => ["exam", { cid: c.id, bid: b.id }] },
+  // Version two rows. Written now so the order is settled; switched off until those agents are built.
+  { id: "repeat-miss", v: 2, agent: "diagnostician", when: () => false, label: () => "Same concept missed twice: find the root gap" },
+  { id: "i-get-it", v: 2, agent: "dialectician", when: () => false, label: () => "Prove you understand it" },
+  { id: "explain-back", v: 2, agent: "auditor", when: () => false, label: () => "Explain it back in your own words" },
+  { id: "work-check", v: 2, agent: "logician", when: () => false, label: () => "Check the reasoning in your work" },
+  { id: "spar", v: 2, agent: "challenger", when: () => false, label: () => "Spar against your goal" },
+  { id: "complete", v: 1, agent: "registrar", when: (c) => c.status === "complete", label: () => "Course complete. Keep your cards fresh in Review.", go: () => ["review", {}] },
+];
+function dean(c) {
+  if (!c) { const r = RULES[0]; return r.when() ? { rule: r, label: r.label(), go: r.go() } : null; }
+  const b = c.status === "live" ? curBlock(c.id) : null;
+  const ll = b ? !!S.lessons[c.id + "/" + b.id] : false;
+  const l = b && ll && !(b.options && !b.chosen) ? nextLesson(c.id, b) : null;
+  for (const r of RULES) {
+    if (r.v !== 1 || !r.go) continue;
+    if (r.when(c, b, l, ll)) return { rule: r, label: r.label(c, b, l), go: r.go(c, b, l), cid: c.id };
+  }
+  return null;
+}
+function activeCourse() { return S.courses.filter((c) => c.status !== "archived").sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""))[0] || null; }
+async function logRoute(s, how) {
+  if (!S.db || !S.uid || !s) return;
+  try {
+    const ref = col("routing").doc(s.cid || "general");
+    const snap = await ref.get();
+    const entries = (snap.exists ? snap.data().entries || [] : []).slice(-199);
+    entries.push({ rule: s.rule.id, agent: s.rule.agent, how, at: nowIso() });
+    await ref.set({ entries });
+  } catch (e) {}
+}
+function followDean(c) {
+  const s = dean(c); if (!s) return null;
+  if (settings().routing === "auto") { logRoute(s, "auto"); go(s.go[0], s.go[1]); return null; }
+  return s;
+}
+
+/* ---------- navigation and subscriptions ---------- */
+function go(view, p = {}) {
+  S.view = view; S.p = p; S.err = "";
+  if (view === "review") startReview();
+  if (p.cid) watchBlocks(p.cid);
+  if (p.cid && p.bid) watchLessons(p.cid, p.bid);
+  if (view === "lesson" && p.lid) openLesson(p.cid, p.bid, p.lid);
+  if (view === "registry") loadRegistry();
+  render(); window.scrollTo(0, 0);
+}
+function watchBlocks(cid) {
+  if (S.blockSubs[cid] || !S.db) return;
+  S.blockSubs[cid] = blocksCol(cid).onSnapshot((snap) => {
+    S.blocks[cid] = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    const cb = curBlock(cid); if (cb) watchLessons(cid, cb.id);
+    render();
+  }, () => { delete S.blockSubs[cid]; });
+}
+function watchLessons(cid, bid) {
+  const k = cid + "/" + bid;
+  if (S.lessonSubs[k] || !S.db) return;
+  S.lessonSubs[k] = lessonsCol(cid, bid).onSnapshot((snap) => {
+    S.lessons[k] = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+    if (S.view === "lesson" && S.p.lid && S.p.bid === bid) {
+      const l = lessonOf(cid, bid, S.p.lid);
+      if (l && (S.p.sec == null || !l.status || l.status === "unread")) openLesson(cid, bid, S.p.lid);
+    }
+    render();
+  }, () => { delete S.lessonSubs[k]; });
+}
+async function openLesson(cid, bid, lid) {
+  const l = lessonOf(cid, bid, lid);
+  if (l) { if (S.p.sec == null) S.p.sec = Math.min(l.progress || 0, Math.max(0, (l.sections || []).length - 1)); }
+  if (l && (!l.status || l.status === "unread")) { try { await lessonsCol(cid, bid).doc(lid).update({ status: "reading", startedAt: nowIso() }); } catch (e) {} }
+}
+
+/* ---------- render ---------- */
+function render() {
+  const main = $("#main");
+  const focusId = document.activeElement && document.activeElement.id;
+  const sel = focusId && document.activeElement.selectionStart;
+  let html = "";
+  try { html = (VIEWS[S.view] || VIEWS.atrium)(); } catch (e) { console.error(e); html = `<div class="notice warn">This room failed to draw. Go back to the Atrium.</div>`; }
+  main.innerHTML = html;
+  for (const [id, v] of Object.entries(S.drafts)) { const el = document.getElementById(id); if (el && "value" in el && v != null) el.value = v; }
+  if (focusId) { const el = document.getElementById(focusId); if (el) { el.focus(); try { if (sel != null) el.setSelectionRange(sel, sel); } catch (e) {} } }
+  renderNav();
+  drawDiagrams();
+}
+function renderNav() {
+  const due = dueCards().length;
+  const cur = { review: "review", registry: "registry" }[S.view] || "atrium";
+  $("#nav").innerHTML = [["atrium", "Atrium", ""], ["review", "Review", due ? `${due} due` : ""], ["registry", "Registry", ""]]
+    .map(([v, l, c]) => `<button data-act="nav" data-v="${v}" ${cur === v ? 'aria-current="page"' : ""}>${l}${c ? `<span class="count">${c}</span>` : ""}</button>`).join("");
+}
+function statusChip(st) {
+  const m = { assessing: ["Interview", ""], awaiting_curriculum: ["Awaiting curriculum", "gold"], live: ["In session", "ok"], complete: ["Complete", "ok"],
+    locked: ["Locked", ""], ready: ["Open", "gold"], taught: ["Exam ready", "gold"], passed: ["Passed", "ok"],
+    unread: ["Not started", ""], reading: ["Reading", "gold"], read: ["Quiz to retake", "bad"] }[st] || [st || "", ""];
+  return `<span class="chip ${m[1]}">${esc(m[0])}</span>`;
+}
+function deanCard(s) {
+  if (!s) return "";
+  return `<section class="panel seal fade">
+    <div class="eyebrow">The Dean suggests</div>
+    <div>${agentTag(s.rule.agent)}</div>
+    <h2>${esc(s.label)}</h2>
+    <div class="row"><button class="btn" data-act="dean-go" data-cid="${esc(s.cid || "")}">Begin</button><button class="btn quiet" data-act="dean-skip">Not now</button></div>
+  </section>`;
+}
+function capNotice() {
+  if (!S.ready) return `<div class="notice">Opening the school...</div>`;
+  if (!S.db || !S.uid) return `<div class="notice warn">Sign in to claude.ai and open this page there to keep your progress. Without it, nothing can be saved.</div>`;
+  if (!S.sample) return `<div class="notice warn">Claude is not available on this page, so the tutors cannot speak. Lessons, cards and records still work.</div>`;
+  return "";
+}
+function sourcesList(src) {
+  if (!src || !src.length) return "";
+  return `<ul class="sources small">${src.map((s) => `<li>${s.url ? `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title || s.url)}</a>` : esc(s.title)} <span class="muted">(${esc(s.date || "undated")})${s.note ? " &middot; " + esc(s.note) : ""}</span></li>`).join("")}</ul>`;
+}
+
+const VIEWS = {
+  atrium() {
+    const ac = activeCourse();
+    const s = S.dismissDean ? null : (dueCards().length ? dean(null) : dean(ac));
+    const courses = S.courses.slice().sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""));
+    return `${capNotice()}
+    ${s ? deanCard(s) : ""}
+    <section class="row" style="gap:28px">
+      <div class="stat"><span class="eyebrow">Cards due</span><b>${dueCards().length}</b></div>
+      <div class="stat"><span class="eyebrow">Courses</span><b>${S.courses.length}</b></div>
+      <div class="stat"><span class="eyebrow">Cards held</span><b>${liveCards().length}</b></div>
+    </section>
+    <div class="diamond">&#9670;</div>
+    <section class="stack">
+      <h2>Your courses</h2>
+      ${courses.length ? courses.map((c) => {
+        const bs = sortedBlocks(c.id); const passed = bs.filter((b) => b.status === "passed").length; const d = c.curriculum?.depth || c.assessment?.depth;
+        return `<button class="panel choice" data-act="open-course" data-cid="${esc(c.id)}" style="text-align:left">
+          <div class="row" style="justify-content:space-between"><h3 style="color:var(--gold-hi)">${esc(c.title)}</h3>${statusChip(c.status)}</div>
+          <p class="muted small">${c.assessment ? esc(c.assessment.goal || "") : esc(c.request || "")}</p>
+          <div class="row small">${d ? `<span class="chip gold">${esc(DEPTH[d] || d)}</span>` : ""}${bs.length ? `<span>${passed} of ${bs.length} blocks passed</span>` : ""}${c.curriculum?.lessons ? `<span class="muted">${c.curriculum.lessons} lessons</span>` : ""}</div>
+        </button>`;
+      }).join("") : `<div class="notice">No courses yet. Tell the Assessor what you want to learn, below. It will ask why, find what you already know, ask how deep you want to go, and hand you to the Cartographer.</div>`}
+    </section>
+    <section class="panel">
+      ${agentTag("assessor")}
+      <h2>Enrol in a course</h2>
+      <label for="enrol-text">What do you want to learn?</label>
+      <textarea id="enrol-text" placeholder="For example: I want to learn AI in depth, so I can help clients automate their businesses and speak about it as an expert."></textarea>
+      <div class="row"><button class="btn" data-act="enrol" ${S.busy || !S.db || !S.uid ? "disabled" : ""}>Begin the interview</button></div>
+    </section>`;
+  },
+
+  enrol() {
+    const c = course(S.p.cid);
+    if (!c) return `<div class="notice">Loading the interview...</div>`;
+    const chat = c.assessChat || [];
+    const bubbles = chat.map((m) => {
+      if (m.role === "user") return `<div class="msg me">${esc(m.content)}</div>`;
+      let say = m.content; try { say = JSON.parse(m.content).say; } catch (e) {}
+      return `<div class="msg them">${esc(say)}</div>`;
+    }).join("");
+    const pend = S.pending && S.pending.cid === c.id ? `<div class="msg me">${esc(S.pending.text)}</div>` : "";
+    const done = c.status !== "assessing";
+    return `<div class="row"><button class="btn quiet" data-act="nav" data-v="atrium">&larr; Atrium</button></div>
+    <div class="eyebrow">Enrolment</div><h1>${esc(c.title)}</h1>${agentTag("assessor")}
+    <div class="chat"><div class="msg me">${esc(c.request)}</div>${bubbles}${pend}
+      ${S.busy ? `<div class="msg them thinking">The Assessor is thinking...</div>` : ""}</div>
+    ${S.err ? `<div class="notice warn">${esc(S.err)} <button class="btn quiet" data-act="assess-retry">Try again</button></div>` : ""}
+    ${done ? `<section class="panel seal"><div class="eyebrow">Interview complete</div><p>Your assessment is filed. Next, the Cartographer maps and writes your curriculum.</p><div class="row"><button class="btn" data-act="open-course" data-cid="${esc(c.id)}">See your course</button></div></section>`
+      : `<div class="stack"><label for="assess-reply">Your answer</label>
+        <textarea id="assess-reply" placeholder="Answer in your own words. Your phone keyboard's microphone works here too."></textarea>
+        <div class="row"><button class="btn" data-act="assess-send" ${S.busy ? "disabled" : ""}>Send</button>
+        ${!chat.length && !S.busy ? `<button class="btn ghost" data-act="assess-start">Start the interview</button>` : ""}</div></div>`}`;
+  },
+
+  course() {
+    const c = course(S.p.cid);
+    if (!c) return `<div class="notice">Loading the course...</div>`;
+    const a = c.assessment || {}; const bs = sortedBlocks(c.id); const d = c.curriculum?.depth || a.depth;
+    const s = S.dismissDean ? null : dean(c);
+    const head = `<div class="row"><button class="btn quiet" data-act="nav" data-v="atrium">&larr; Atrium</button></div>
+      <div class="eyebrow">The Map</div><h1>${esc(c.title)}</h1>
+      <div class="row">${statusChip(c.status)}${d ? `<span class="chip gold">${esc(DEPTH[d] || d)}</span>` : ""}${a.baseline_level ? `<span class="chip">Level: ${esc(a.baseline_level)}</span>` : ""}${c.curriculum?.fast_moving ? `<span class="chip">Fast-moving field</span>` : ""}</div>
+      ${a.goal ? `<p><span class="muted">Goal:</span> ${esc(a.goal)}</p>` : ""}`;
+    if (c.status === "assessing") return head + `<div class="row"><button class="btn" data-act="open-enrol" data-cid="${esc(c.id)}">Continue the interview</button></div>`;
+    if (c.status === "awaiting_curriculum") return head + `<section class="panel seal">${agentTag("cartographer")}
+      <h2>The Cartographer is ready to write this course</h2>
+      <p>The curriculum is built once, in NEXUS on your desktop, where the scouts can search the web for current material and the lessons are written in full. Open NEXUS and run:</p>
+      <p><code style="font-family:ui-monospace,Consolas,monospace;background:var(--sunk);padding:4px 8px;border-radius:3px">/collegium build</code></p>
+      <p class="muted small">When it finishes, this page fills in by itself. Course reference: ${esc(c.id)}</p>
+      <details><summary>What the Assessor filed</summary><div class="stack small" style="margin-top:10px">
+        ${a.why ? `<p><b>Why:</b> ${esc(a.why)}</p>` : ""}${(a.known || []).length ? `<p><b>Already known:</b> ${esc(a.known.join("; "))}</p>` : ""}
+        ${(a.gaps || []).length ? `<p><b>Gaps:</b> ${esc(a.gaps.join("; "))}</p>` : ""}${(a.skip || []).length ? `<p><b>Skip:</b> ${esc(a.skip.join("; "))}</p>` : ""}
+      </div></details></section>`;
+    return head + (s ? deanCard(s) : "") + `
+      ${c.curriculum?.summary ? `<p>${esc(c.curriculum.summary)}</p>` : ""}
+      ${(c.curriculum?.skip || []).length ? `<details><summary>What we skip</summary><ul class="small">${c.curriculum.skip.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></details>` : ""}
+      <div class="diamond">&#9670;</div>
+      <div class="path">${bs.map((b) => blockHtml(c, b)).join("")}</div>`;
+  },
+
+  lesson() {
+    const { cid, bid, lid } = S.p; const c = course(cid); const b = blockOf(cid, bid); const l = lessonOf(cid, bid, lid);
+    if (!c || !b || !l) return `<div class="notice">Opening the lesson...</div>`;
+    const ls = lessonsOf(cid, bid); const li = ls.findIndex((x) => x.id === lid);
+    const secs = l.sections || []; const stage = S.p.stage || "read";
+    const sec = Math.min(Math.max(0, S.p.sec || 0), Math.max(0, secs.length - 1));
+    const head = `<div class="row"><button class="btn quiet" data-act="open-course" data-cid="${esc(cid)}">&larr; The Map</button></div>
+      <div class="eyebrow">Block ${ROMAN[b.order] || b.order} &middot; Lesson ${li + 1} of ${ls.length} &middot; ${l.minutes || 20} min</div>
+      <h1>${esc(l.title)}</h1>
+      ${l.objective ? `<p><span class="muted">After this you can:</span> ${esc(l.objective)}</p>` : ""}
+      <div class="progress" aria-label="Lesson progress">${secs.map((x, i) => `<button data-act="sec" data-i="${i}" class="${stage === "read" && i === sec ? "here" : i <= (l.progress || 0) || stage !== "read" ? "on" : ""}" aria-label="Section ${i + 1}: ${esc(x.h)}"></button>`).join("")}<button data-act="stage" data-s="end" class="${stage !== "read" ? "here" : ""}" aria-label="Wrap-up and quiz"></button></div>`;
+    if (stage === "quiz") return head + lessonQuizHtml(c, b, l);
+    if (stage === "end") return head + lessonEndHtml(c, b, l);
+    const x = secs[sec] || { h: "", md: "" }; const rk = `${lid}-${sec}`; const dk = `deep-${lid}-${sec}`;
+    const deeperText = S.stream[dk] || (l.deeper && l.deeper[sec]);
+    return head + `<article class="stack fade">
+      <div class="eyebrow">Section ${sec + 1} of ${secs.length}</div>
+      <h2>${esc(x.h)}</h2>
+      <div class="prose">${md(x.md)}</div>
+      ${x.diagram ? diagramSlot(x.diagram) : ""}
+      ${x.check ? `<div class="check"><div class="eyebrow">Check yourself</div><div class="prose">${md(x.check.q)}</div>
+        ${S.reveal[rk] ? `<div class="feedback ok prose">${md(x.check.a)}</div>` : `<p class="small muted">Answer it in your head, or out loud, before you reveal.</p><div class="row"><button class="btn ghost" data-act="reveal" data-k="${esc(rk)}">Reveal the answer</button></div>`}</div>` : ""}
+      ${deeperText ? `<div class="deeper"><div class="eyebrow">Deeper, from the Scholar</div><div class="prose" id="out-${dk}">${out(deeperText)}</div></div>`
+        : `<div class="row"><button class="btn quiet" data-act="deeper" data-i="${sec}" ${S.busy ? "disabled" : ""}>Go deeper on this section</button></div>`}
+      <div class="secnav"><button class="btn quiet" data-act="sec" data-i="${sec - 1}" ${sec === 0 ? "disabled" : ""}>&larr; Back</button>
+        ${sec < secs.length - 1 ? `<button class="btn" data-act="sec" data-i="${sec + 1}">Next section</button>` : `<button class="btn" data-act="stage" data-s="end">Wrap up</button>`}</div>
+      <details ${S.asked[lid] ? "open" : ""}><summary>Ask the Scholar about this</summary><div class="stack" style="margin-top:10px">
+        <textarea id="ask-${esc(lid)}" style="min-height:70px" placeholder="Anything unclear in this lesson?"></textarea>
+        <div class="row"><button class="btn ghost" data-act="ask" ${S.busy ? "disabled" : ""}>Ask</button></div>
+        ${S.asked[lid] ? `<div class="msg me">${esc(S.asked[lid])}</div><div class="prose" id="out-ask-${esc(lid)}">${out(S.stream["ask-" + lid])}</div>` : ""}</div></details>
+    </article>`;
+  },
+
+  exam() {
+    const c = course(S.p.cid); const b = blockOf(S.p.cid, S.p.bid);
+    if (!c || !b) return `<div class="notice">Loading the examination...</div>`;
+    const E = S.exam && S.exam.bid === b.id ? S.exam : null;
+    const head = `<div class="row"><button class="btn quiet" data-act="open-course" data-cid="${esc(c.id)}">&larr; The Map</button></div>
+      <div class="eyebrow">Block examination &middot; Block ${ROMAN[b.order] || b.order}</div><h1>${esc(b.title)}</h1>${agentTag("proctor")}`;
+    const ladder = (r) => `<div class="ladder" aria-label="Difficulty rung ${r} of 4">${[1, 2, 3, 4].map((i) => `<div class="rung ${i === r ? "on" : ""}">${ROMAN[i]}</div>`).join("")}</div>
+      <p class="small muted">I recall &middot; II explain &middot; III apply &middot; IV judge. A right answer climbs a rung; a miss steps down.</p>`;
+    const rk = `reteach-${b.id}`;
+    if (!E) return head + `${S.err ? `<div class="notice warn">${esc(S.err)}</div>` : ""}
+      ${(b.misses || []).length ? `<section class="panel">${agentTag("scholar")}<p>Last time you missed: ${esc(b.misses.join(", "))}.</p>
+        ${S.stream[rk] ? `<div class="prose" id="out-${rk}">${out(S.stream[rk])}</div>` : `<div class="row"><button class="btn ghost" data-act="reteach-block" ${S.busy ? "disabled" : ""}>Explain those another way</button></div>`}</section>` : ""}
+      <section class="panel seal"><h2>Five questions across the whole block</h2>${ladder(b.rung || 2)}
+      <p class="muted small">Pass mark: 4 of 5, with at least one right answer at rung III or above. ${b.lastScore != null ? `Last attempt: ${b.lastScore} of 5.` : ""}</p>
+      <div class="row"><button class="btn" data-act="exam-start" ${S.busy ? "disabled" : ""}>${S.busy ? "The Proctor is writing..." : "Begin the examination"}</button></div></section>`;
+    if (E.finished) {
+      const s = S.dismissDean ? null : dean(c);
+      return head + `<section class="panel seal fade"><div class="eyebrow">Result</div>
+        <h2>${E.score} of ${E.answers.length} ${E.pass ? "&middot; Passed" : "&middot; Not yet"}</h2>
+        <p>${E.pass ? "Block passed. The Registrar filed linking cards and the next block is open." : "The Registrar turned each miss into a flash card. The Scholar can explain them another way before you retake."}</p>
+        ${E.reminder ? `<p class="small muted">${esc(E.reminder)}</p>` : ""}</section>${s ? deanCard(s) : ""}`;
+    }
+    return head + ladder(E.rung) + `<p class="small muted">Question ${E.answers.length + (E.lastAnswer ? 0 : 1)} of 5</p>` + questionHtml(E, "exam");
+  },
+
+  review() {
+    const R = S.review;
+    if (!R || !R.queue.length) {
+      const next = liveCards().map((c) => c.due).filter((d) => d > today()).sort()[0];
+      return `${capNotice()}<div class="eyebrow">Review</div><h1>Flash cards</h1>${agentTag("registrar")}
+        <section class="panel seal"><h2>${R && R.done ? `Done. ${R.done} card${R.done === 1 ? "" : "s"} reviewed.` : "Nothing due right now."}</h2>
+        <p class="muted">${next ? `Next cards are due ${esc(niceDate(next))}.` : liveCards().length ? "All cards are scheduled." : "Cards appear here as you pass lesson quizzes and as the Registrar turns misses into cards."}</p>
+        ${R && R.reminder ? `<p class="small">${esc(R.reminder)}</p>` : ""}</section>`;
+    }
+    const card = S.cards.find((c) => c.id === R.queue[0]);
+    if (!card) { R.queue.shift(); return VIEWS.review(); }
+    const prev = (g) => { const n = schedule(card, g); return n.interval === 0 ? "again today" : `${n.interval}d`; };
+    return `${capNotice()}<div class="eyebrow">Review &middot; ${R.queue.length} left</div><h1>Flash cards</h1>
+      <div class="card fade"><div class="eyebrow">${esc(card.concept || "")}</div><div class="front">${esc(card.front)}</div>
+      ${R.shown ? `<hr class="rule"><div class="prose">${md(card.back)}</div>` : ""}</div>
+      ${R.shown ? `<div class="grades">
+        <button class="btn quiet" data-act="grade" data-g="again">Again<small>${prev("again")}</small></button>
+        <button class="btn ghost" data-act="grade" data-g="hard">Hard<small>${prev("hard")}</small></button>
+        <button class="btn" data-act="grade" data-g="good">Good<small>${prev("good")}</small></button>
+        <button class="btn ghost" data-act="grade" data-g="easy">Easy<small>${prev("easy")}</small></button></div>`
+      : `<div class="row"><button class="btn" data-act="show">Show the answer</button></div><p class="small muted">Say the answer out loud or in your head first. Recall is the exercise.</p>`}`;
+  },
+
+  registry() {
+    const st = settings(); const tab = S.regTab;
+    const tabs = [["results", "Results"], ["notes", "Notes"], ["usage", "Usage"], ["roster", "Roster"], ["settings", "Settings"]];
+    let body = "";
+    if (tab === "results") {
+      const rs = S.results;
+      body = rs == null ? `<p class="muted">Loading results...</p>` : rs.length ? `<div class="list">${rs.map((r) => `<div><span>${esc(r.lessonTitle || r.blockTitle || "")} <span class="muted small">${r.kind === "lesson-quiz" ? "lesson quiz" : "block exam"} &middot; ${esc((r.at || "").slice(0, 10))}</span></span><span class="chip ${r.pass ? "ok" : "bad"}">${r.score} of ${r.total}</span></div>`).join("")}</div>` : `<p class="muted">No quizzes or examinations sat yet.</p>`;
+    } else if (tab === "notes") {
+      const ns = S.notes;
+      body = ns == null ? `<p class="muted">Loading notes...</p>` : ns.length ? ns.map((n) => `<div class="panel"><div class="eyebrow">${esc(n.lessonTitle || n.blockTitle || "")} &middot; ${esc((n.at || "").slice(0, 10))}</div><div class="prose">${md(n.text)}</div></div>`).join("") : `<p class="muted">No notes filed yet. Add one at the end of any lesson.</p>`;
+    } else if (tab === "usage") {
+      body = usageHtml();
+    } else if (tab === "roster") {
+      body = `<p class="muted small">Ten offices of the school. Five sit in this first term; five join in the second.</p><div class="list">${Object.keys(TITLES).map((k) => {
+        const live = ["assessor", "cartographer", "scholar", "proctor", "registrar"].includes(k);
+        return `<div><span>${agentTag(k)}</span><span class="chip ${live ? "ok" : ""}">${live ? "In office" : "Second term"}</span></div>`;
+      }).join("")}</div>`;
+    } else {
+      body = `<div class="stack">
+        <div><label for="set-routing">Who picks the next step</label>
+          <select id="set-routing" data-act-change="set-routing"><option value="confirm" ${st.routing === "confirm" ? "selected" : ""}>The Dean suggests, I confirm</option><option value="auto" ${st.routing === "auto" ? "selected" : ""}>The Dean moves me on by itself</option></select></div>
+        <div><label for="set-hour">Reminder time</label>
+          <select id="set-hour" data-act-change="set-hour">${Array.from({ length: 16 }, (_, i) => i + 6).map((h) => `<option value="${h}" ${st.reminderHour === h ? "selected" : ""}>${pad(h)}:00</option>`).join("")}</select></div>
+        <div><label for="set-rem">Calendar reminders</label>
+          <select id="set-rem" data-act-change="set-rem"><option value="on" ${st.reminders ? "selected" : ""}>On: one Google Calendar event on days cards are due</option><option value="off" ${!st.reminders ? "selected" : ""}>Off</option></select></div>
+        <div class="row"><button class="btn ghost" data-act="remind-now">Book my next reminder</button><button class="btn quiet" data-act="export">Export my records</button></div>
+        <div class="notice small"><div>Saving progress: ${S.db && S.uid ? "on" : "off (sign in to claude.ai)"}</div><div>Tutors (Claude): ${S.sample ? "on" : "off"}</div><div>Calendar: ${S.mcp ? "available" : "not available on this page"}</div></div></div>`;
+    }
+    return `<div class="eyebrow">Registry</div><h1>The record</h1>${agentTag("registrar")}
+      <div class="tabs">${tabs.map(([k, l]) => `<button data-act="reg-tab" data-k="${k}" aria-pressed="${tab === k}">${l}</button>`).join("")}</div>${body}`;
+  },
+};
+
+function blockHtml(c, b) {
+  const needsChoice = b.options && !b.chosen && b.status !== "locked";
+  const loaded = !!S.lessons[c.id + "/" + b.id];
+  const ls = loaded ? lessonsOf(c.id, b.id) : (b.lessons || []).filter((x) => !x.option || x.option === b.chosen);
+  const mins = ls.reduce((t, x) => t + (x.minutes || 0), 0);
+  const firstOpen = loaded ? ls.find((x) => x.status !== "passed") : null;
+  return `<div class="block" data-status="${esc(b.status)}">
+    <div class="num"><span>${ROMAN[b.order] || b.order}</span><i></i></div>
+    <div class="body">
+      <div class="row" style="justify-content:space-between"><h3 style="color:var(--gold-hi)">${esc(b.title)}</h3>${statusChip(b.status)}</div>
+      <p class="small">${esc(b.objective || "")}</p>
+      <p class="small muted">${esc(b.why || "")}${ls.length ? ` &middot; ${ls.length} lesson${ls.length === 1 ? "" : "s"}, about ${mins} min` : ""}</p>
+      ${b.options ? `<div class="choices">${b.options.map((o) => `<button class="choice" data-act="choose" data-cid="${esc(c.id)}" data-bid="${esc(b.id)}" data-opt="${esc(o.id)}" aria-pressed="${b.chosen === o.id}" ${b.status === "locked" ? "disabled" : ""}><b>${esc(o.title)}</b><br><span class="small muted">${esc(o.summary || "")}</span></button>`).join("")}</div>` : ""}
+      ${b.status !== "locked" && !needsChoice ? `<div class="lessons">${ls.map((x) => {
+        const st = loaded ? x.status || "unread" : "unread";
+        const can = loaded && (st === "passed" || x === firstOpen || st === "reading" || st === "read");
+        return `<button class="lrow" data-st="${esc(st)}" data-act="open-lesson" data-cid="${esc(c.id)}" data-bid="${esc(b.id)}" data-lid="${esc(x.id)}" ${can ? "" : "disabled"}><span class="mk"></span><span class="t">${esc(x.title)}<br><span class="small muted">${x.minutes || ""} min</span></span>${statusChip(st)}</button>`;
+      }).join("")}</div>
+      ${b.status === "taught" || b.status === "passed" ? `<div class="row"><button class="btn ghost" data-act="open-exam" data-cid="${esc(c.id)}" data-bid="${esc(b.id)}">Block examination</button></div>` : ""}` : ""}
+    </div></div>`;
+}
+
+function lessonEndHtml(c, b, l) {
+  const T = l.tryState || {}; const prompt = T.prompt || l.practice?.prompt || "";
+  return `<article class="stack fade">
+    <div class="eyebrow">Wrap-up</div>
+    ${l.field ? `<section class="panel"><div class="eyebrow">In the field</div>
+      ${l.field.client ? `<h3>With a client</h3><div class="prose">${md(l.field.client)}</div>` : ""}
+      ${l.field.talk ? `<h3>To a room</h3><div class="prose">${md(l.field.talk)}</div>` : ""}</section>` : ""}
+    ${(l.key_points || []).length ? `<section><h3>Key points</h3><ul class="prose">${l.key_points.map((k) => `<li>${esc(k)}</li>`).join("")}</ul></section>` : ""}
+    ${(l.terms || []).length ? `<details><summary>Terms</summary><ul class="small" style="margin-top:8px">${l.terms.map((t) => `<li><b>${esc(t.term)}</b>: ${esc(t.meaning)}</li>`).join("")}</ul></details>` : ""}
+    ${(l.sources || []).length ? `<details><summary>Sources</summary>${sourcesList(l.sources)}</details>` : ""}
+    ${prompt ? `<section class="panel">${agentTag("scholar")}<div class="eyebrow">Practice, no help</div><div class="prose">${md(prompt)}</div>
+      ${(T.history || []).map((h) => `<div class="feedback ${h.correct ? "ok" : "bad"}"><p class="small muted">You wrote: ${esc(h.attempt)}</p><div class="prose">${md(h.feedback)}</div>${h.help ? `<details open><summary>Step by step</summary><div class="prose" style="margin-top:8px">${md(h.help)}</div></details>` : ""}</div>`).join("")}
+      ${T.solved ? `<p class="feedback ok">Solved alone.</p>` : `<label for="try-${esc(l.id)}">Your attempt</label><textarea id="try-${esc(l.id)}"></textarea>
+        <div class="row"><button class="btn ghost" data-act="try" ${S.busy ? "disabled" : ""}>Submit</button><button class="btn quiet" data-act="stuck" ${S.busy ? "disabled" : ""}>I'm stuck</button></div>`}</section>` : ""}
+    ${(l.misses || []).length ? `<section class="panel">${agentTag("scholar")}<p>Last quiz you missed: ${esc(l.misses.join(", "))}.</p>
+      ${S.stream["reteach-" + l.id] ? `<div class="prose" id="out-reteach-${esc(l.id)}">${md(S.stream["reteach-" + l.id])}</div>` : `<div class="row"><button class="btn ghost" data-act="reteach-lesson" ${S.busy ? "disabled" : ""}>Explain those another way</button></div>`}</section>` : ""}
+    <section class="panel">${agentTag("registrar")}<label for="note-${esc(l.id)}">Add a note</label>
+      <textarea id="note-${esc(l.id)}" style="min-height:70px" placeholder="Your own words. The Registrar tidies it and adds nothing."></textarea>
+      <div class="row"><button class="btn quiet" data-act="note" ${S.busy ? "disabled" : ""}>File the note</button></div></section>
+    <section class="panel seal">${agentTag("proctor")}<h2>Lesson quiz</h2><p class="muted small">${(l.quiz || []).length} questions. Pass with ${Math.max(1, (l.quiz || []).length - 1)} right.${l.quizScore != null ? ` Last attempt: ${l.quizScore} of ${(l.quiz || []).length}.` : ""}</p>
+      <div class="row"><button class="btn" data-act="stage" data-s="quiz" ${(l.quiz || []).length ? "" : "disabled"}>${l.status === "passed" ? "Retake the quiz" : "Take the quiz"}</button><button class="btn quiet" data-act="sec" data-i="0">Read again</button></div></section>
+  </article>`;
+}
+
+function lessonQuizHtml(c, b, l) {
+  let Q = S.lq;
+  if (!Q || Q.lid !== l.id) { Q = S.lq = { lid: l.id, bid: b.id, cid: c.id, questions: (l.quiz || []).slice(), idx: 0, answers: [], lastAnswer: null }; }
+  if (Q.finished) {
+    return `<section class="panel seal fade"><div class="eyebrow">Lesson quiz result</div><h2>${Q.score} of ${Q.answers.length} ${Q.pass ? "&middot; Passed" : "&middot; Not yet"}</h2>
+      <p>${Q.pass ? "Lesson passed. The Registrar is filing flash cards from it." : "Each miss is now a flash card. Look over the wrap-up, ask the Scholar to explain the misses another way, then retake."}</p>
+      <div class="row">${Q.pass ? `<button class="btn" data-act="after-lesson">Continue</button>` : `<button class="btn" data-act="stage" data-s="end">Back to the wrap-up</button>`}</div></section>`;
+  }
+  Q.current = Q.questions[Q.idx];
+  return `<p class="small muted">Question ${Q.idx + 1} of ${Q.questions.length}</p>` + questionHtml(Q, "lq");
+}
+
+function questionHtml(E, kind) {
+  const q = E.current; const a = E.lastAnswer;
+  if (!q) return `<div class="notice">No question to show.</div>`;
+  const done = kind === "exam" ? E.answers.length >= 5 : E.idx >= E.questions.length - 1;
+  return `${S.err ? `<div class="notice warn">${esc(S.err)}</div>` : ""}
+    <section class="panel fade">
+      <div class="prose" style="font-size:1.1rem">${md(q.q)}</div>
+      ${a ? `<div class="feedback ${a.correct ? "ok" : "bad"}"><b>${a.correct ? "Right." : "Not quite."}</b> ${q.type === "mc" ? `<p class="small">Answer: ${esc(q.answer)}</p>` : ""}<div class="prose small">${md(a.feedback || q.why || "")}</div></div>
+        <div class="row"><button class="btn" data-act="${kind}-next">${done ? "See the result" : "Next question"}</button></div>`
+      : q.type === "mc" ? `<div class="choices">${(q.choices || []).map((ch, i) => `<button class="choice" data-act="${kind}-mc" data-i="${i}" ${S.busy ? "disabled" : ""}>${esc(ch)}</button>`).join("")}</div>`
+      : `<label for="${kind}-short">Your answer</label><textarea id="${kind}-short"></textarea><div class="row"><button class="btn" data-act="${kind}-short" ${S.busy ? "disabled" : ""}>${S.busy ? "Marking..." : "Submit"}</button></div>`}
+    </section>`;
+}
+
+/* ---------- spaced repetition (simplified SM-2) ---------- */
+function schedule(card, g) {
+  let ease = card.ease || 2.5, iv = card.interval || 0;
+  if (g === "again") { ease = Math.max(1.3, ease - 0.2); iv = 0; }
+  else if (g === "hard") { ease = Math.max(1.3, ease - 0.15); iv = Math.max(1, Math.round(iv * 1.2)); }
+  else if (g === "good") { iv = iv === 0 ? 1 : iv === 1 ? 3 : Math.round(iv * ease); }
+  else if (g === "easy") { ease = Math.min(2.8, ease + 0.15); iv = iv === 0 ? 3 : Math.round(Math.max(iv, 1) * ease * 1.3); }
+  iv = Math.min(iv, 365);
+  return { ease: Math.round(ease * 100) / 100, interval: iv, due: addDays(today(), iv) };
+}
+function startReview() { S.review = { queue: dueCards().map((c) => c.id), shown: false, done: 0 }; }
+
+/* ---------- reminders (Google Calendar) ---------- */
+function calErr(e) {
+  const c = e && e.code;
+  if (c === "server_not_connected" || c === "server_not_found") return "Add Google Calendar in claude.ai Settings, Connectors, to get reminders.";
+  if (c === "needs_reauth") return "Reconnect Google Calendar in claude.ai Settings, Connectors.";
+  if (c === "not_in_manifest" || c === "approval_required" || c === "not_granted" || c === "blocked_by_policy") return "Calendar reminders are not allowed for this page. Allow Google Calendar in the page's permissions to turn them on.";
+  if (c === "selection_required") return "Choose which Google Calendar to use when claude.ai asks, then try again.";
+  if (c === "tool_error") return "Google Calendar refused the event: " + (e.message || "").slice(0, 120);
+  return "The reminder could not be booked just now. Use Book my next reminder in the Registry to try again.";
+}
+async function scheduleReminder(quiet) {
+  const st = settings();
+  if (!st.reminders) return "";
+  if (!S.mcp) return quiet ? "" : "Calendar is not available on this page.";
+  const t = today(); const hour = st.reminderHour; const nowH = new Date().getHours();
+  const cards = liveCards();
+  const D = cards.map((c) => c.due).filter((d) => d && (d > t || (d === t && nowH < hour))).sort()[0];
+  if (!D) return "";
+  const count = cards.filter((c) => c.due <= D).length;
+  const summary = `Collegium: ${count} card${count === 1 ? "" : "s"} due`;
+  const description = `Ten minutes with your flash cards in the Collegium Alexandrinum.${APP_URL && !APP_URL.startsWith("__") ? " Open: " + APP_URL : ""}`;
+  try {
+    const ref = col("reminders").doc(D);
+    const snap = await ref.get(); const prior = snap.exists ? snap.data() : null;
+    if (prior && prior.eventId) {
+      if (prior.count !== count) { await S.mcp.callTool(CAL, "update_event", { eventId: prior.eventId, summary, description }); await ref.set({ ...prior, count, at: nowIso() }); }
+    } else {
+      const r = await S.mcp.callTool(CAL, "create_event", { summary, description, startTime: `${D}T${pad(hour)}:00:00`, endTime: `${D}T${pad(hour)}:10:00`, overrideReminders: [{ method: "popup", minutes: 0 }], availability: "AVAILABILITY_FREE" });
+      const p = r && r.payload; const eventId = (p && (p.id || p.eventId || (p.event && p.event.id))) || "";
+      await ref.set({ eventId, count, at: nowIso() });
+    }
+    return `Reminder booked in Google Calendar for ${niceDate(D)} at ${pad(hour)}:00.`;
+  } catch (e) { return calErr(e); }
+}
+
+/* ---------- actions ---------- */
+async function createCourse(text) {
+  await ensureSchool();
+  const cid = `${slug(text)}-${Date.now().toString(36)}`;
+  await col("courses").doc(cid).set({ title: text.length > 60 ? text.slice(0, 57) + "..." : text, request: text, status: "assessing", assessChat: [], createdAt: nowIso(), updatedAt: nowIso() });
+  return cid;
+}
+async function assessTurn(cid, text) {
+  const c = course(cid); if (!c) return;
+  const chat = (c.assessChat || []).slice();
+  if (text) chat.push({ role: "user", content: text });
+  const opener = `${AGENTS.assessor || ""}\n\n---\nTODAY: ${today()}\nThe student's opening request: "${c.request}"\n${chat.length ? "Continue the interview." : "Begin the interview with your first question."} Reply with ONLY the JSON object from the output contract.`;
+  S.busy = true; S.err = ""; S.pending = text ? { cid, text } : null; render();
+  let input = opener, metered = false;
+  try {
+    const turns = chat.slice();
+    if (turns.length && turns[turns.length - 1].role !== "user") turns.push({ role: "user", content: "(Please continue.)" });
+    input = turns.length ? [{ role: "user", content: opener }, ...turns] : opener;
+    const r = await S.sample.json(input, { modelTier: "default", cache: false });
+    meter("assessor", "interview", input, JSON.stringify(r), "default"); metered = true;
+    if (!r || typeof r.say !== "string") throw { code: "invalid_json" };
+    chat.push({ role: "assistant", content: JSON.stringify(r) });
+    const upd = { assessChat: chat, updatedAt: nowIso() };
+    if (r.done && r.assessment) { upd.status = "awaiting_curriculum"; upd.assessment = r.assessment; if (r.assessment.topic) upd.title = r.assessment.topic; }
+    await col("courses").doc(cid).update(upd);
+    S.pending = null; S.drafts["assess-reply"] = "";
+    if (upd.status) logRoute({ cid, rule: { id: "awaiting", agent: "cartographer" } }, "handoff");
+  } catch (e) { if (!metered) meter("assessor", "interview", input, e && e.text, "default", e || {}); S.err = agentErr(e); S.retry = text || null; }
+  finally { S.busy = false; render(); }
+}
+async function markTry(c, b, l, attempt) {
+  const T = l.tryState || { prompt: l.practice?.prompt || "", guide: l.practice?.answer_guide || "", history: [] };
+  S.busy = true; S.err = ""; render();
+  try {
+    const r = await askJson("scholar", "mark_try", { student: student(c), lesson: { title: l.title, key_points: l.key_points }, practice_prompt: T.prompt, answer_guide: T.guide, attempt }, "default");
+    const hist = (T.history || []).concat([{ attempt, correct: !!r.correct, feedback: r.feedback || "", help: r.help || "" }]).slice(-8);
+    const next = { ...T, history: hist, solved: !!r.correct };
+    if (!r.correct && r.next_try && r.next_try.prompt) { next.prompt = r.next_try.prompt; next.guide = r.next_try.answer_guide || ""; }
+    await lessonsCol(c.id, b.id).doc(l.id).update({ tryState: next });
+    S.drafts[`try-${l.id}`] = "";
+  } catch (e) { S.err = agentErr(e); } finally { S.busy = false; render(); }
+}
+async function fileNote(c, b, l, text) {
+  S.busy = true; render();
+  try {
+    let note = text;
+    if (S.sample) { try { const r = await askJson("registrar", "format_note", { note: text }, "quick"); if (r && r.note) note = r.note; } catch (e) {} }
+    await ensureSchool();
+    await col("notes").add({ courseId: c.id, blockId: b.id, lessonId: l.id, blockTitle: b.title, lessonTitle: l.title, text: note, raw: text, at: nowIso() });
+    S.drafts[`note-${l.id}`] = ""; S.notes = null; toast("Note filed in the Registry.");
+  } catch (e) { toast("The note could not be saved. Try again."); } finally { S.busy = false; render(); }
+}
+async function addCards(c, b, list, lid) {
+  for (const k of list || []) {
+    if (!k || !k.front || !k.back) continue;
+    await col("cards").add({ courseId: c.id, blockId: b.id, lessonId: lid || null, front: String(k.front), back: String(k.back), concept: String(k.concept || ""), ease: 2.5, interval: 0, due: today(), reps: 0, lapses: 0, createdAt: nowIso() });
+  }
+}
+function markLocal(q, ch) { const norm = (s) => String(s).trim().toLowerCase(); return norm(ch) === norm(q.answer) || norm(q.answer).startsWith(norm(ch)) || norm(ch).startsWith(norm(q.answer)); }
+async function markShort(q, t) {
+  const r = await askJson("proctor", "mark", { questions: [{ id: q.id, q: q.q, model_answer: q.answer, why: q.why, student_answer: t }] }, "quick");
+  const res = (r && r.results || [])[0] || {}; return { correct: !!res.correct, feedback: (res.feedback || "") + (q.why ? "\n\n" + q.why : "") };
+}
+async function lessonQuizFinish() {
+  const Q = S.lq; const c = course(Q.cid); const b = blockOf(Q.cid, Q.bid); const l = lessonOf(Q.cid, Q.bid, Q.lid);
+  const score = Q.answers.filter((a) => a.correct).length; const pass = score >= Math.max(1, Q.questions.length - 1);
+  Object.assign(Q, { finished: true, score, pass }); render();
+  const misses = Q.answers.filter((a) => !a.correct);
+  try {
+    await ensureSchool();
+    await col("results").add({ courseId: c.id, blockId: b.id, lessonId: l.id, blockTitle: b.title, lessonTitle: l.title, kind: "lesson-quiz", score, total: Q.answers.length, pass, items: Q.answers, at: nowIso() });
+    const missConcepts = [...new Set(misses.map((m) => m.concept).filter(Boolean))];
+    await lessonsCol(c.id, b.id).doc(l.id).update({ status: pass ? "passed" : "read", quizScore: score, misses: pass ? [] : missConcepts, passedAt: pass ? nowIso() : null });
+    if (pass) {
+      const rest = lessonsOf(c.id, b.id).filter((x) => x.id !== l.id && x.status !== "passed");
+      if (!rest.length && b.status === "ready") await blocksCol(c.id).doc(b.id).update({ status: "taught" });
+    }
+    await col("courses").doc(c.id).update({ updatedAt: nowIso() });
+    if (S.sample) {
+      try {
+        if (misses.length) { const r = await askJson("registrar", "cards_from_misses", { misses: misses.map((m) => ({ question: m.q, right_answer: m.answer, student_answer: m.given, concept: m.concept })) }, "quick"); await addCards(c, b, r && r.cards, l.id); }
+        if (pass) { const r = await askJson("registrar", "cards_from_lesson", { lesson: l.title, key_points: l.key_points, terms: l.terms, checks: (l.sections || []).map((s) => s.check).filter(Boolean) }, "quick"); await addCards(c, b, r && r.cards, l.id); }
+      } catch (e) { toast("The Registrar could not make cards this time."); }
+    }
+    const m = await scheduleReminder(true); if (m) toast(m);
+  } catch (e) { toast("The quiz result could not be saved. Check your connection."); }
+  render();
+}
+function nextQuestion(E) {
+  const left = E.questions.filter((q) => !E.asked.includes(q.id)); if (!left.length) return null;
+  left.sort((a, b) => Math.abs((a.rung || 1) - E.rung) - Math.abs((b.rung || 1) - E.rung) || (a.rung || 1) - (b.rung || 1));
+  return left[0];
+}
+async function examStart(c, b) {
+  S.busy = true; S.err = ""; render();
+  try {
+    const r = await askJson("proctor", "write", { student: student(c), block: { title: b.title, objective: b.objective }, pack: blockPack(c.id, b.id), weak_concepts: b.misses || [] }, "default");
+    const qs = (r && r.questions || []).filter((q) => q && q.q && q.answer);
+    if (qs.length < 5) throw { code: "invalid_json" };
+    const E = { bid: b.id, cid: c.id, questions: qs, asked: [], answers: [], rung: Math.min(4, Math.max(1, b.rung || 2)), maxRungRight: 0 };
+    E.current = nextQuestion(E); E.asked.push(E.current.id); S.exam = E;
+  } catch (e) { S.err = agentErr(e); } finally { S.busy = false; render(); }
+}
+function recordExam(E, correct, feedback, given) {
+  const q = E.current;
+  E.answers.push({ id: q.id, q: q.q, rung: q.rung, concept: q.concept, given, correct, feedback, answer: q.answer });
+  if (correct) E.maxRungRight = Math.max(E.maxRungRight, q.rung || 1);
+  E.rung = Math.min(4, Math.max(1, E.rung + (correct ? 1 : -1)));
+  E.lastAnswer = { correct, feedback };
+}
+function recordLq(Q, correct, feedback, given) {
+  const q = Q.current;
+  Q.answers.push({ id: q.id, q: q.q, rung: q.rung, concept: q.concept, given, correct, feedback, answer: q.answer });
+  Q.lastAnswer = { correct, feedback };
+}
+async function examFinish(c, b) {
+  const E = S.exam; const score = E.answers.filter((a) => a.correct).length; const pass = score >= 4 && E.maxRungRight >= 3;
+  Object.assign(E, { finished: true, score, pass }); render();
+  const misses = E.answers.filter((a) => !a.correct);
+  try {
+    await ensureSchool();
+    await col("results").add({ courseId: c.id, blockId: b.id, blockTitle: b.title, kind: "block-exam", score, total: E.answers.length, pass, rung: E.rung, items: E.answers, at: nowIso() });
+    const missConcepts = [...new Set(misses.map((m) => m.concept).filter(Boolean))];
+    await blocksCol(c.id).doc(b.id).update({ rung: E.rung, lastScore: score, status: pass ? "passed" : "taught", misses: pass ? [] : missConcepts, updatedAt: nowIso() });
+    if (pass) {
+      const nxt = sortedBlocks(c.id).find((x) => (x.order || 0) > (b.order || 0) && x.status === "locked");
+      if (nxt) await blocksCol(c.id).doc(nxt.id).update({ status: "ready" });
+      await col("courses").doc(c.id).update({ currentBlock: nxt ? nxt.id : null, updatedAt: nowIso(), ...(nxt ? {} : { status: "complete" }) });
+    } else await col("courses").doc(c.id).update({ updatedAt: nowIso() });
+    if (S.sample) {
+      try {
+        if (misses.length) { const r = await askJson("registrar", "cards_from_misses", { misses: misses.map((m) => ({ question: m.q, right_answer: m.answer, student_answer: m.given, concept: m.concept })) }, "quick"); await addCards(c, b, r && r.cards); }
+        if (pass) { const r = await askJson("registrar", "cards_from_block", { block: b.title, pack: blockPack(c.id, b.id) }, "quick"); await addCards(c, b, r && r.cards); }
+      } catch (e) { toast("The Registrar could not make cards this time."); }
+    }
+    E.reminder = await scheduleReminder(true); S.results = null;
+  } catch (e) { toast("The result could not be saved. Check your connection."); }
+  render(); followDean(c);
+}
+async function loadRegistry() {
+  if (!S.db || !S.uid) { S.results = []; S.notes = []; return; }
+  try {
+    const [r, n] = await Promise.all([col("results").orderBy("at", "desc").limit(100).get(), col("notes").orderBy("at", "desc").limit(100).get()]);
+    S.results = r.docs.map((d) => ({ id: d.id, ...d.data() })); S.notes = n.docs.map((d) => ({ id: d.id, ...d.data() }));
+  } catch (e) { S.results = []; S.notes = []; }
+  render();
+}
+async function loadUsage() {
+  if (!S.db || !S.uid) { S.usage = []; render(); return; }
+  S.usage = "loading";
+  const since = new Date(Date.now() - 30 * 864e5).toISOString();
+  try { const u = await col("usage").orderBy("at", "desc").limit(2000).get(); S.usage = u.docs.map((d) => d.data()).filter((r) => (r.at || "") >= since); }
+  catch (e) { S.usage = []; }
+  render();
+}
+function usageHtml() {
+  const us = S.usage;
+  if (us == null) { loadUsage(); return `<p class="muted">Loading usage...</p>`; }
+  if (us === "loading") return `<p class="muted">Loading usage...</p>`;
+  if (!us.length) return `<p class="muted">No tutor calls logged in the last 30 days. Counting started 25 Oct 2026.</p>`;
+  const k = (n) => n >= 1e6 ? (n / 1e6).toFixed(2) + "M" : n >= 1e3 ? (n / 1e3).toFixed(1) + "k" : String(n);
+  const sum = (rows) => rows.reduce((a, r) => (a.calls++, a.inTok += r.inTok || 0, a.outTok += r.outTok || 0, a), { calls: 0, inTok: 0, outTok: 0 });
+  const group = (key) => { const m = {}; for (const r of us) (m[key(r)] = m[key(r)] || []).push(r); return Object.entries(m).map(([g, rows]) => [g, sum(rows)]); };
+  const row = (label, t) => `<div><span>${label} <span class="muted small">${t.calls} call${t.calls === 1 ? "" : "s"}</span></span><span class="chip">${k(t.inTok + t.outTok)}</span></div>`;
+  const all = sum(us), d = today(), td = sum(us.filter((r) => r.day === d)), days = new Set(us.map((r) => r.day)).size;
+  const byAgent = group((r) => r.agent).sort((a, b) => (b[1].inTok + b[1].outTok) - (a[1].inTok + a[1].outTok));
+  const byMode = group((r) => `${r.agent}: ${r.mode}`).sort((a, b) => (b[1].inTok + b[1].outTok) - (a[1].inTok + a[1].outTok)).slice(0, 8);
+  const byDay = group((r) => r.day).sort((a, b) => b[0].localeCompare(a[0])).slice(0, 14);
+  const fails = us.filter((r) => !r.ok).length;
+  return `<div class="panel"><div class="eyebrow">Last 30 days</div>
+      <p><strong>${k(all.inTok + all.outTok)}</strong> tokens over ${all.calls} calls (${k(all.inTok)} sent, ${k(all.outTok)} back).
+      Today ${k(td.inTok + td.outTok)}. Average ${k(Math.round((all.inTok + all.outTok) / all.calls))} a call, ${k(Math.round((all.inTok + all.outTok) / days))} a study day.${fails ? ` ${fails} failed call${fails === 1 ? "" : "s"} included.` : ""}</p></div>
+    <h3 style="margin-top:1.2rem">By agent</h3><div class="list">${byAgent.map(([g, t]) => row(esc(TITLES[g] || g), t)).join("")}</div>
+    <h3 style="margin-top:1.2rem">Biggest tasks</h3><div class="list">${byMode.map(([g, t]) => row(esc(g), t)).join("")}</div>
+    <h3 style="margin-top:1.2rem">By day</h3><div class="list">${byDay.map(([g, t]) => row(esc(g), t)).join("")}</div>
+    <p class="small muted">Estimates. Claude does not report exact counts to this page, so text is counted at about 4 characters a token. Thinking is not counted, so real use runs higher. Course builds on the desktop are tracked separately.</p>`;
+}
+async function saveSetting(k, v) {
+  try { await ensureSchool(); const st = settings(); st[k] = v; await root().update({ settings: st }); toast("Saved."); } catch (e) { toast("That setting could not be saved."); }
+}
+async function exportAll() {
+  if (!S.downloads) return toast("Saving files is not available on this page.");
+  try {
+    const data = { exportedAt: nowIso(), school: S.school, courses: S.courses, blocks: {}, lessons: {}, cards: S.cards };
+    const [r, n] = await Promise.all([col("results").get(), col("notes").get()]);
+    data.results = r.docs.map((d) => ({ id: d.id, ...d.data() })); data.notes = n.docs.map((d) => ({ id: d.id, ...d.data() }));
+    for (const c of S.courses) {
+      const bs = await blocksCol(c.id).get(); data.blocks[c.id] = bs.docs.map((d) => ({ id: d.id, ...d.data() }));
+      for (const b of bs.docs) { const ls = await lessonsCol(c.id, b.id).get(); data.lessons[c.id + "/" + b.id] = ls.docs.map((d) => ({ id: d.id, ...d.data() })); }
+    }
+    await S.downloads.save({ filename: `collegium-records-${today()}.json`, data: JSON.stringify(data, null, 2) });
+  } catch (e) { if (e && e.code !== "cancelled") toast("The export did not complete."); }
+}
+const cur = () => { const { cid, bid, lid } = S.p; return [course(cid), blockOf(cid, bid), lid ? lessonOf(cid, bid, lid) : null]; };
+async function saveProgress(i) {
+  const [c, b, l] = cur(); if (!c || !b || !l) return;
+  const p = Math.max(l.progress || 0, i);
+  if (p !== (l.progress || 0)) { try { await lessonsCol(c.id, b.id).doc(l.id).update({ progress: p }); } catch (e) {} }
+}
+
+const ACT = {
+  nav: (d) => go(d.v),
+  "open-course": (d) => go("course", { cid: d.cid }),
+  "open-enrol": (d) => go("enrol", { cid: d.cid }),
+  "open-lesson": (d) => { S.lq = null; go("lesson", { cid: d.cid, bid: d.bid, lid: d.lid }); },
+  "open-exam": (d) => { S.exam = null; go("exam", { cid: d.cid, bid: d.bid }); },
+  "dean-go": (d) => { const c = d.cid ? course(d.cid) : null; const s = dueCards().length && S.view === "atrium" ? dean(null) : dean(c || activeCourse()); if (!s) return; logRoute(s, "confirmed"); S.exam = null; S.lq = null; go(s.go[0], s.go[1]); },
+  "dean-skip": () => { S.dismissDean = true; render(); setTimeout(() => (S.dismissDean = false), 60000); },
+  enrol: async () => {
+    const t = ($("#enrol-text").value || "").trim(); if (!t) return toast("Write what you want to learn first.");
+    if (!S.sample) return toast("Claude is not available on this page, so the Assessor cannot speak.");
+    try { const cid = await createCourse(t); S.drafts["enrol-text"] = ""; go("enrol", { cid }); waitThen(() => course(cid), () => assessTurn(cid, null)); }
+    catch (e) { toast("The course could not be created. Check that you are signed in."); }
+  },
+  "assess-start": () => assessTurn(S.p.cid, null),
+  "assess-send": () => { const t = ($("#assess-reply").value || "").trim(); if (!t) return; S.drafts["assess-reply"] = t; assessTurn(S.p.cid, t); },
+  "assess-retry": () => assessTurn(S.p.cid, S.retry),
+  choose: async (d) => { try { await blocksCol(d.cid).doc(d.bid).update({ chosen: d.opt }); watchLessons(d.cid, d.bid); toast("Path chosen."); } catch (e) { toast("That choice could not be saved."); } },
+  sec: (d) => { const i = Number(d.i); if (i < 0) return; S.p.stage = "read"; S.p.sec = i; saveProgress(i); render(); window.scrollTo(0, 0); },
+  stage: async (d) => {
+    S.p.stage = d.s; if (d.s === "quiz") S.lq = null; render(); window.scrollTo(0, 0);
+    if (d.s === "end") { const [c, b, l] = cur(); if (l && l.status === "reading") { try { await lessonsCol(c.id, b.id).doc(l.id).update({ progress: Math.max(l.progress || 0, (l.sections || []).length - 1) }); } catch (e) {} } }
+  },
+  reveal: (d) => { S.reveal[d.k] = true; render(); },
+  deeper: async (d) => {
+    const [c, b, l] = cur(); const i = Number(d.i); const x = (l.sections || [])[i]; if (!x) return;
+    const k = `deep-${l.id}-${i}`;
+    const ok = await streamTo(k, "scholar", "deeper", { student: student(c), lesson: l.title, objective: l.objective, section: { heading: x.h, text: x.md }, other_sections: (l.sections || []).map((s) => s.h) }, "default");
+    if (ok && S.stream[k]) { try { const deeper = Object.assign({}, l.deeper || {}); deeper[i] = S.stream[k]; await lessonsCol(c.id, b.id).doc(l.id).update({ deeper }); } catch (e) {} }
+  },
+  ask: () => { const [c, b, l] = cur(); const q = ($(`#ask-${l.id}`).value || "").trim(); if (!q) return; const x = (l.sections || [])[S.p.sec || 0] || {}; S.asked[l.id] = q;
+    streamTo("ask-" + l.id, "scholar", "ask", { student: student(c), lesson: l.title, current_section: { heading: x.h, text: x.md }, key_points: l.key_points, question: q }, "default"); },
+  try: () => { const [c, b, l] = cur(); const t = ($(`#try-${l.id}`).value || "").trim(); if (!t) return toast("Write your attempt first, even a rough one."); markTry(c, b, l, t); },
+  stuck: () => { const [c, b, l] = cur(); const t = ($(`#try-${l.id}`).value || "").trim(); markTry(c, b, l, (t ? t + "\n\n" : "") + "(The student says they are stuck. Walk them through it step by step, then give a new similar problem.)"); },
+  "reteach-lesson": () => { const [c, b, l] = cur(); streamTo("reteach-" + l.id, "scholar", "reteach", { student: student(c), lesson: { title: l.title, key_points: l.key_points, sections: (l.sections || []).map((s) => ({ h: s.h, md: s.md })) }, missed_concepts: l.misses || [] }, "default"); },
+  "reteach-block": () => { const c = course(S.p.cid), b = blockOf(S.p.cid, S.p.bid); streamTo("reteach-" + b.id, "scholar", "reteach", { student: student(c), pack: blockPack(c.id, b.id), missed_concepts: b.misses || [] }, "default"); },
+  note: () => { const [c, b, l] = cur(); const t = ($(`#note-${l.id}`).value || "").trim(); if (t) fileNote(c, b, l, t); },
+  "lq-mc": (d) => { const Q = S.lq; const q = Q.current; const ch = (q.choices || [])[Number(d.i)] || ""; recordLq(Q, markLocal(q, ch), q.why || "", ch); render(); },
+  "lq-short": async () => { const Q = S.lq; const q = Q.current; const t = ($("#lq-short").value || "").trim(); if (!t) return; S.busy = true; render();
+    try { const r = await markShort(q, t); recordLq(Q, r.correct, r.feedback, t); S.drafts["lq-short"] = ""; } catch (e) { S.err = agentErr(e); } finally { S.busy = false; render(); } },
+  "lq-next": () => { const Q = S.lq; Q.lastAnswer = null; S.err = ""; if (Q.idx >= Q.questions.length - 1) return lessonQuizFinish(); Q.idx++; render(); },
+  "after-lesson": () => { const c = course(S.p.cid); S.lq = null; const s = followDean(c); if (s) go("course", { cid: c.id }); },
+  "exam-start": () => { const c = course(S.p.cid), b = blockOf(S.p.cid, S.p.bid); if (c && b) examStart(c, b); },
+  "exam-mc": (d) => { const E = S.exam; const q = E.current; const ch = (q.choices || [])[Number(d.i)] || ""; recordExam(E, markLocal(q, ch), q.why || "", ch); render(); },
+  "exam-short": async () => { const E = S.exam; const q = E.current; const t = ($("#exam-short").value || "").trim(); if (!t) return; S.busy = true; render();
+    try { const r = await markShort(q, t); recordExam(E, r.correct, r.feedback, t); S.drafts["exam-short"] = ""; } catch (e) { S.err = agentErr(e); } finally { S.busy = false; render(); } },
+  "exam-next": () => { const E = S.exam; E.lastAnswer = null; S.err = ""; const c = course(E.cid), b = blockOf(E.cid, E.bid);
+    if (E.answers.length >= 5) return examFinish(c, b); const q = nextQuestion(E); if (!q) return examFinish(c, b); E.current = q; E.asked.push(q.id); render(); },
+  show: () => { S.review.shown = true; render(); },
+  grade: async (d) => {
+    const R = S.review; const id = R.queue.shift(); const card = S.cards.find((c) => c.id === id); R.shown = false;
+    if (card) {
+      const n = schedule(card, d.g); if (d.g === "again") R.queue.push(id);
+      try { await col("cards").doc(id).update({ ...n, reps: (card.reps || 0) + 1, lapses: (card.lapses || 0) + (d.g === "again" ? 1 : 0), lastReview: nowIso(), history: [...(card.history || []).slice(-19), { at: today(), g: d.g }] }); } catch (e) { toast("That grade could not be saved."); }
+      if (d.g !== "again") R.done++;
+    }
+    if (!R.queue.length) { render(); R.reminder = await scheduleReminder(true); }
+    render();
+  },
+  "reg-tab": (d) => { S.regTab = d.k; render(); },
+  "remind-now": async () => { const m = await scheduleReminder(false); toast(m || "No cards are scheduled yet, so there is nothing to remind you about."); },
+  export: () => exportAll(),
+};
+function waitThen(test, fn, tries = 40) { if (test()) return fn(); if (tries <= 0) return; setTimeout(() => waitThen(test, fn, tries - 1), 150); }
+
+document.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-act]"); if (!el || el.disabled) return;
+  const f = ACT[el.dataset.act]; if (f) { e.preventDefault(); f(el.dataset); }
+});
+document.addEventListener("input", (e) => { if (e.target.id && (e.target.tagName === "TEXTAREA" || e.target.tagName === "INPUT")) S.drafts[e.target.id] = e.target.value; });
+document.addEventListener("change", (e) => {
+  const k = e.target.dataset && e.target.dataset.actChange; if (!k) return;
+  if (k === "set-routing") saveSetting("routing", e.target.value);
+  if (k === "set-hour") saveSetting("reminderHour", Number(e.target.value));
+  if (k === "set-rem") saveSetting("reminders", e.target.value === "on");
+});
+
+/* ---------- boot ---------- */
+async function boot() {
+  render();
+  const C = window.claude;
+  if (C && C.use) {
+    const use = (n) => C.use(n).catch(() => null);
+    [S.db, S.user, S.sample, S.mcp, S.downloads] = await Promise.all(["db", "user", "sample", "mcp", "downloads"].map(use));
+    if (S.user) { try { S.uid = await S.user.id(); } catch (e) { S.uid = null; } }
+  }
+  S.ready = true;
+  if (S.db && S.uid) {
+    root().onSnapshot((d) => { S.school = d.exists ? d.data() : null; render(); }, () => {});
+    col("courses").onSnapshot((snap) => {
+      S.courses = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+      for (const c of S.courses) if (c.status === "live" || c.status === "complete") watchBlocks(c.id);
+      render();
+    }, () => {});
+    col("cards").onSnapshot((snap) => { S.cards = snap.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, () => {});
+  }
+  render();
+}
+boot();
+</script>

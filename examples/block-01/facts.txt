@@ -1,0 +1,84 @@
+l1.json: 5 unsupported
+  [A neuron, a layer, a network] 70 billion  ::  When someone says a model has "70 billion parameters", they mean 70 billion of these adjustable numbers.
+  [The memory problem and the LSTM fix (1997)] 2010  ::  From roughly 2010 to 2016 they were the engine behind speech recognition on phones, handwriting recognition and machine translation.
+  [The memory problem and the LSTM fix (1997)] 2016  ::  From roughly 2010 to 2016 they were the engine behind speech recognition on phones, handwriting recognition and machine translation.
+  [Attention: let the decoder look back (Bahdanau, 2014)] 80 percent  ::  The decoder builds a context vector that is 80 percent S3, plus a little of the others.
+  [Attention Is All You Need (2017)] 2018  ::  Google's BERT (2018) and OpenAI's GPT series (from 2018) both used transformer parts.
+l2.json: 7 unsupported
+  [Embeddings: words as points in space] 28,374  ::  The crude way is to give each token an ID: "boiler" is 28,374, "plumber" is 51,902.
+  [Embeddings: words as points in space] 51,902  ::  The crude way is to give each token an ID: "boiler" is 28,374, "plumber" is 51,902.
+  [Embeddings: words as points in space] 2013  ::  This idea, that you can learn meaning from the company a word keeps, was famously shown in 2013 with the word2vec method.
+  [Embeddings: words as points in space] 1957  ::  Firth put the principle in 1957 as "you shall know a word by the company it keeps".
+  [A worked example by hand] 81 percent  ::  Softmax uses exponentials, so the leader gets a bigger share than its raw ratio suggests (81 percent rather than 4/6, about 67 percent).
+  [A worked example by hand] 67 percent  ::  Softmax uses exponentials, so the leader gets a bigger share than its raw ratio suggests (81 percent rather than 4/6, about 67 percent).
+  [The next-token loop, sampling and temperature] 300  ::  To produce a 300-token reply, the model runs this loop 300 times, one token each.
+l3.json: 29 unsupported
+  [Why the model does not read words] 1,000,000  ::  Context window of 1,000,000 tokens.
+  [How a tokenizer is built: byte pair encoding] 256  ::  Start with a menu of single characters (modern tokenizers start with the 256 possible bytes, so every possible text can be written, including any language and emoji).
+  [Many examples: what splits and what does not] 1,234,567  ::  "1,234,567.89" may become seven or eight.
+  [Many examples: what splits and what does not] 07700  ::  A phone number like "07700 900123" can run to several tokens.
+  [Many examples: what splits and what does not] 900123  ::  A phone number like "07700 900123" can run to several tokens.
+  [Tokens to words, and why the same text costs different amounts] 500  ::  Put another way, 1,000 tokens is roughly 750 words, and one page of 500 words is roughly 670 tokens.
+  [Tokens to words, and why the same text costs different amounts] 670  ::  Put another way, 1,000 tokens is roughly 750 words, and one page of 500 words is roughly 670 tokens.
+  [Tokens to words, and why the same text costs different amounts] 20 percent  ::  But if B's tokenizer needs 20 percent fewer tokens to represent your text, B is actually cheaper for your job.
+  [Tokens to words, and why the same text costs different amounts] 125  ::  A costs 0.90 per token and sees 125 tokens, so 112.5.
+  [Tokens to words, and why the same text costs different amounts] 112  ::  A costs 0.90 per token and sees 125 tokens, so 112.5.
+  [Tokens to words, and why the same text costs different amounts] 11 percent  ::  B is about 11 percent cheaper for this job.
+  [Worked maths: pricing a client job] 300  ::  - The email averages 300 words.
+  [Worked maths: pricing a client job] At 0.75  ::  At 0.75 words per token, that is 300 / 0.75 = **400 tokens**.
+  [Worked maths: pricing a client job] 800  ::  - Your instructions (the system prompt, with a few examples) run about 800 tokens.
+  [Worked maths: pricing a client job] 1,200  ::  - Input per call: 400 + 800 = **1,200 tokens**.
+  [Worked maths: pricing a client job] 480,000  ::  - Input: 400 calls x 1,200 = **480,000 tokens**.
+  [Worked maths: pricing a client job] 48,000  ::  - Output: 400 calls x 120 = **48,000 tokens**.
+  [Worked maths: pricing a client job] 0.48 million  ::  - Input: 0.48 million x 3 = **1.44 dollars**.
+  [Worked maths: pricing a client job] 0.048 million  ::  - Output: 0.048 million x 15 = **0.72 dollars**.
+  [Worked maths: pricing a client job] 648,000  ::  Input rises to 648,000 tokens, costing 1.94 dollars, so the day costs 2.66 dollars and the month 79.92 dollars.
+  [Worked maths: pricing a client job] 23 percent  ::  A 23 percent rise in the bill from a tokenizer alone.
+  [Worked maths: pricing a client job] 13,333  ::  For 200 emails a day, that is 200 x 13,333 = 2.67 million extra input tokens a day, costing roughly 8 dollars a day at the placeholder price.
+  [Worked maths: pricing a client job] 2.67 million  ::  For 200 emails a day, that is 200 x 13,333 = 2.67 million extra input tokens a day, costing roughly 8 dollars a day at the placeholder price.
+  [Worked maths: pricing a client job] 1,600  ::  **A fatter prompt.** Doubling the instructions from 800 to 1,600 tokens adds 400 x 800 = 320,000 input tokens a day, about 0.96 dollars more.
+  [Worked maths: pricing a client job] 320,000  ::  **A fatter prompt.** Doubling the instructions from 800 to 1,600 tokens adds 400 x 800 = 320,000 input tokens a day, about 0.96 dollars more.
+  [Worked maths: pricing a client job] 280  ::  Output is the expensive side, so that is 400 x 280 = 112,000 extra tokens a day, about 1.68 dollars.
+  [Worked maths: pricing a client job] 112,000  ::  Output is the expensive side, so that is 400 x 280 = 112,000 extra tokens a day, about 1.68 dollars.
+  [Worked maths: pricing a client job] 30 percent  ::  Then add a margin of 20 to 30 percent for variation, retries and model changes.
+  [Why models cannot count letters, and other token side effects] 160  ::  - **Spelling-sensitive tasks.** Acrostics, rhymes by letter and exact character limits ("write exactly 160 characters") are unreliable.
+l4.json: 29 unsupported
+  [The model's desk: what a context window is] 1 million  ::  Anthropic's documentation (as I found it in October 2026, so check the live page) lists a 1 million token window as the default on its newer models, including Opus 4.6 and later, Sonnet 4.6 and later, and Haiku 5.5, with a maximum output of
+  [The model's desk: what a context window is] 128,000  ::  Anthropic's documentation (as I found it in October 2026, so check the live page) lists a 1 million token window as the default on its newer models, including Opus 4.6 and later, Sonnet 4.6 and later, and Haiku 5.5, with a maximum output of
+  [The model's desk: what a context window is] 200,000  ::  Older models have 200,000 tokens.
+  [The model's desk: what a context window is] 750,000  ::  Using the rough rule from Lesson 3, 1 million tokens is around 750,000 words, and 200,000 tokens is around 150,000 words.
+  [The model's desk: what a context window is] 150,000  ::  Using the rough rule from Lesson 3, 1 million tokens is around 750,000 words, and 200,000 tokens is around 150,000 words.
+  [The model's desk: what a context window is] 80,000  ::  A typical novel is 80,000 to 100,000 words.
+  [Everything that fills the window] 500  ::  In a business assistant this can be 500 tokens or 5,000.
+  [Everything that fills the window] 5,000  ::  In a business assistant this can be 500 tokens or 5,000.
+  [Everything that fills the window] 3,000  ::  If it reads 5 files of 3,000 tokens each, that is 15,000 tokens in one step.
+  [Everything that fills the window] 15,000  ::  If it reads 5 files of 3,000 tokens each, that is 15,000 tokens in one step.
+  [Why a long chat costs more than it looks: the re-send effect] 12,000  ::  - Step 2 sends 12,000.
+  [Why a long chat costs more than it looks: the re-send effect] 14,000  ::  - Step 3 sends 14,000.
+  [Why a long chat costs more than it looks: the re-send effect] 68,000  ::  - Step 30 sends 68,000.
+  [Why a long chat costs more than it looks: the re-send effect] 39,000  ::  That is 30 steps with an average of 39,000: **1,170,000 input tokens** processed in all.
+  [Why a long chat costs more than it looks: the re-send effect] 1,170,000  ::  That is 30 steps with an average of 39,000: **1,170,000 input tokens** processed in all.
+  [Sizes, limits and what happens when the window fills] 1,000,000  ::  On the newer Anthropic models listed in the documentation (as of October 2026, check the live page), that is a 1,000,000-token window and 128,000 tokens of maximum output.
+  [Sizes, limits and what happens when the window fills] 64,000  ::  If you set max output to 64,000 tokens on a model with a 200,000 window, you have about 136,000 for input.
+  [Sizes, limits and what happens when the window fills] 136,000  ::  If you set max output to 64,000 tokens on a model with a 200,000 window, you have about 136,000 for input.
+  [Sizes, limits and what happens when the window fills] 300  ::  A law-adjacent client, a conveyancing firm, wants to drop a 300-page contract bundle into the model.
+  [Latency, cost and caching] 500,000  ::  A 500,000-token request may take noticeably longer.
+  [Latency, cost and caching] 20,000  ::  A support assistant has a fixed 20,000-token prefix (tools plus system prompt plus a policy document) and gets 100 requests within five minutes.
+  [Latency, cost and caching] 2,000,000  ::  - **No caching:** 100 x 20,000 = 2,000,000 tokens x 3 dollars per million = **6.00 dollars**.
+  [Latency, cost and caching] 1,980,000  ::  Then 99 reads of 20,000 = 1,980,000 tokens at 0.1 times, 0.30 dollars per million = 0.594 dollars.
+  [Latency, cost and caching] 89 percent  ::  Total: **about 0.67 dollars**, roughly an 89 percent saving on the repeated part.
+  [Sizing a client's context: a design walk-through] 2,200  ::  - **Fixed** (same every time, cacheable): system prompt and tools, about 2,200 tokens.
+  [Sizing a client's context: a design walk-through] 8,000  ::  - **A customer attaches a 12-page inspection report.** About 8,000 tokens by the 0.75 rule (12 pages x 500 words = 6,000 words / 0.75).
+  [Sizing a client's context: a design walk-through] 6,000  ::  - **A customer attaches a 12-page inspection report.** About 8,000 tokens by the 0.75 rule (12 pages x 500 words = 6,000 words / 0.75).
+  [Sizing a client's context: a design walk-through] 5,250  ::  - **A busy day.** 100 enquiries at about 5,250 tokens each is 525,000 tokens a day.
+  [Sizing a client's context: a design walk-through] 525,000  ::  - **A busy day.** 100 enquiries at about 5,250 tokens each is 525,000 tokens a day.
+l5.json: 9 unsupported
+  [Stage 2: instruction tuning] 1.3 billion  ::  Human raters preferred the output of the 1.3 billion parameter InstructGPT model over the 175 billion parameter GPT-3, a model more than a hundred times larger.
+  [Stage 3: learning from preferences (RLHF)] 82 percent  ::  If the reward model gives A a score of 2.0 and B 0.5, the difference is 1.5, and the model predicts A preferred with probability about 82 percent.
+  [Constitutional AI and safety training] 52 billion  ::  The paper's main experiments used a 52 billion parameter model, according to a secondary source I found.
+  [Stage 4: reasoning models and chain of thought] 20 percent  ::  Quote task: three technicians each work 6.5 hours at 85 dollars an hour, plus 240 dollars of parts that carry a 20 percent markup.
+  [Stage 4: reasoning models and chain of thought] 1,657  ::  19.5 x 85 = 1,657.50 dollars.
+  [Stage 4: reasoning models and chain of thought] 288  ::  - Parts with markup: 240 x 1.20 = 288 dollars.
+  [Stage 4: reasoning models and chain of thought] 1,945  ::  - Total: 1,657.50 + 288 = **1,945.50 dollars**.
+  [Stage 4: reasoning models and chain of thought] 3,000  ::  The same question with 3,000 thinking tokens plus a 200-token answer is 3,200 output tokens, or 0.048 dollars, sixteen times more.
+  [Stage 4: reasoning models and chain of thought] 3,200  ::  The same question with 3,000 thinking tokens plus a 200-token answer is 3,200 output tokens, or 0.048 dollars, sixteen times more.

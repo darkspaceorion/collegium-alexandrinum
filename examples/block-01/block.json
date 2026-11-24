@@ -1,0 +1,187 @@
+{
+ "order": 1,
+ "title": "How language models really work",
+ "why": "Everything else in the course rests on knowing what a model is doing when it answers, and why that drives cost, limits and behaviour.",
+ "objective": "The student can explain from first principles how a modern language model turns text into an answer, and why that drives cost, limits and behaviour.",
+ "builds_on": "Builds on what you already know: a model, next-token prediction, neural networks and reinforcement learning in outline.",
+ "options": null,
+ "chosen": null,
+ "status": "ready",
+ "lessons": [
+  {
+   "id": "l1",
+   "title": "From neural networks to attention: the story",
+   "minutes": 35,
+   "option": null
+  },
+  {
+   "id": "l2",
+   "title": "Inside the transformer",
+   "minutes": 40,
+   "option": null
+  },
+  {
+   "id": "l3",
+   "title": "Tokens: the unit of everything",
+   "minutes": 30,
+   "option": null
+  },
+  {
+   "id": "l4",
+   "title": "The context window",
+   "minutes": 30,
+   "option": null
+  },
+  {
+   "id": "l5",
+   "title": "From base model to assistant to reasoning model",
+   "minutes": 35,
+   "option": null
+  }
+ ],
+ "pack": {
+  "summary": "This block explains how a modern language model turns text into an answer. It tells the story from neural networks through recurrent networks and LSTMs to attention (2014) and the transformer (2017), then opens the transformer: embeddings, position, queries, keys and values, multi-head attention, the next-token loop and temperature. It then covers tokens and how they drive cost, the context window and what fills it, and finally how a base model becomes an assistant and then a reasoning model through instruction tuning, human and AI feedback and reinforcement learning. The thread through all five lessons is that behaviour, cost and limits all follow from a few mechanisms: text is tokens, tokens fill a limited window, attention cost grows with length, and training shapes behaviour.",
+  "key_points": [
+   "A language model predicts the next token. Doing that well forces it to absorb grammar, facts and common sense.",
+   "Networks learn by guess, measure the loss, and nudge weights downhill (gradient descent), with backpropagation assigning blame. Backprop was popularised in 1986, not invented then.",
+   "Recurrent networks and LSTMs read one word at a time with a fixed-size memory, so they were slow and forgetful. Seq2seq translation (2014) crushed the input into one vector.",
+   "Attention (Bahdanau, Cho, Bengio, 2014) let the decoder blend all encoder states. Attention Is All You Need (2017) removed recurrence entirely and made training parallel.",
+   "Self-attention gives each token a query, key and value. Scores from query-key matches become softmax weights that blend the values. Position information must be added.",
+   "Generation is an autoregressive loop: score every token, pick one (temperature and top-p shape the choice), append, repeat. A model has no memory between calls.",
+   "Attention cost grows with the square of the text length, which is why long inputs cost more and run slower.",
+   "Tokens are subword pieces built by byte pair encoding. Rare words, names, numbers, code, URLs and some languages cost more tokens, and different models tokenise differently.",
+   "Models cannot see letters, so counting, reversing and exact character limits belong in code.",
+   "The context window holds the system prompt, tool definitions, history, retrieved text, tool results, output and thinking. Agent loops are billed on the sum of re-sends, not the final size.",
+   "Lost in the middle and context rot show that a bigger window is capacity, not quality. Prompt caching cuts the price of a repeated prefix but cached tokens still use the window.",
+   "Pretraining makes a base model. Instruction tuning, RLHF and Constitutional AI shape it into an assistant. Reinforcement learning on checkable problems makes reasoning models, which spend thinking tokens billed as output.",
+   "Hallucination comes from plausible-text generation and from training and scoring that reward guessing. Mitigate with facts in context, allowed abstention, evidence, tools and human checks."
+  ],
+  "terms": [
+   {
+    "term": "Token",
+    "meaning": "A piece of text, often a word or part of a word, that the model reads and writes."
+   },
+   {
+    "term": "Embedding",
+    "meaning": "A list of numbers placing a token on a map of meaning."
+   },
+   {
+    "term": "Attention",
+    "meaning": "A weighted blend of other tokens values, with weights set by query-key matches."
+   },
+   {
+    "term": "Transformer",
+    "meaning": "The 2017 architecture built from attention and feed-forward layers with no recurrence."
+   },
+   {
+    "term": "Temperature",
+    "meaning": "A setting that sharpens or flattens next-token probabilities."
+   },
+   {
+    "term": "Context window",
+    "meaning": "Everything the model can see in one request, shared between input and output."
+   },
+   {
+    "term": "Prompt caching",
+    "meaning": "Reusing the provider's work on an identical request prefix so repeated input is cheaper."
+   },
+   {
+    "term": "Context rot",
+    "meaning": "Falling reliability as the amount of text in the window grows."
+   },
+   {
+    "term": "Base model",
+    "meaning": "A pretrained model that continues text but does not follow instructions."
+   },
+   {
+    "term": "RLHF",
+    "meaning": "Reinforcement learning from human feedback, optimising a model against a reward model trained on human rankings."
+   },
+   {
+    "term": "Reasoning model",
+    "meaning": "A model trained with reinforcement learning to think at length before answering."
+   },
+   {
+    "term": "Hallucination",
+    "meaning": "A confident statement that is false or unsupported."
+   }
+  ],
+  "pitfalls": [
+   "Saying attention was invented in 2017 or backprop in 1986. Attention dates from 2014 and backprop was popularised in 1986.",
+   "Treating a bigger context window as a reason to paste everything in. Cost, delay and error risk all grow.",
+   "Comparing models on price per token alone. Tokenizers differ, so compare the cost of your actual text.",
+   "Asking a model to count letters or hit an exact character length in its head. Use code.",
+   "Assuming the model remembers earlier chats. Apparent memory is text re-sent in each request.",
+   "Promising that a reasoning model removes hallucination, or that output will be identical every run.",
+   "Quoting vendor limits, prices or tokenizer multipliers without checking the live page and its date."
+  ],
+  "sources": [
+   {
+    "title": "Attention Is All You Need (Vaswani et al.)",
+    "url": "https://arxiv.org/abs/1706.03762",
+    "date": "2017-06",
+    "note": "The transformer. 28.4 BLEU on WMT 2014 English to German."
+   },
+   {
+    "title": "Neural Machine Translation by Jointly Learning to Align and Translate (Bahdanau, Cho, Bengio)",
+    "url": "https://arxiv.org/pdf/1409.0473",
+    "date": "2014-09",
+    "note": "Introduced attention for translation."
+   },
+   {
+    "title": "Long Short-Term Memory (Hochreiter and Schmidhuber)",
+    "url": "https://papers.baulab.info/papers/Hochreiter-1997.pdf",
+    "date": "1997-11",
+    "note": "Gated memory cells."
+   },
+   {
+    "title": "Neural Machine Translation of Rare Words with Subword Units (Sennrich et al.)",
+    "url": "https://arxiv.org/pdf/1508.07909",
+    "date": "2015-08",
+    "note": "Byte pair encoding for language models."
+   },
+   {
+    "title": "Lost in the Middle (Liu et al.)",
+    "url": "https://arxiv.org/abs/2307.03172",
+    "date": "2023-07",
+    "note": "Accuracy lowest for information in the middle of long contexts."
+   },
+   {
+    "title": "Context Rot (Chroma)",
+    "url": "https://research.trychroma.com/context-rot",
+    "date": "2025-07-14",
+    "note": "18 models. Vendor report, read with care."
+   },
+   {
+    "title": "Anthropic, Context windows and Prompt caching docs",
+    "url": "https://platform.claude.com/docs/en/build-with-claude/context-windows",
+    "date": "2026-10",
+    "note": "As of October 2026, found undated. Window sizes and cache prices change, check the live pages."
+   },
+   {
+    "title": "Training language models to follow instructions with human feedback (InstructGPT)",
+    "url": "https://arxiv.org/pdf/2203.02155",
+    "date": "2022-03",
+    "note": "SFT and RLHF."
+   },
+   {
+    "title": "Constitutional AI (Bai et al.)",
+    "url": "https://arxiv.org/abs/2212.08073",
+    "date": "2022-12",
+    "note": "Principles and RLAIF."
+   },
+   {
+    "title": "DeepSeek-R1 (Nature)",
+    "url": "https://www.nature.com/nature-index/article/10.1038/s41586-025-09422-z",
+    "date": "2025-09-17",
+    "note": "Reasoning from reinforcement learning."
+   },
+   {
+    "title": "Why language models hallucinate (OpenAI)",
+    "url": "https://openai.com/index/why-language-models-hallucinate/",
+    "date": "2025-09-05",
+    "note": "Vendor post on guessing incentives."
+   }
+  ]
+ }
+}

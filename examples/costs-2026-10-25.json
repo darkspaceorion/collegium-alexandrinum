@@ -1,0 +1,49 @@
+{
+  "session": "07fb9fe8-512b-4d91-9d91-d944af0ba835",
+  "since": null,
+  "roles": {
+    "main thread": {
+      "agents": 0,
+      "calls": 125,
+      "read": 33861878,
+      "out": 279634,
+      "models": [
+        "<synthetic>",
+        "claude-opus-5-5"
+      ],
+      "peak_context": 525276
+    },
+    "scouts": {
+      "agents": 16,
+      "calls": 157,
+      "read": 12959895,
+      "out": 4602,
+      "models": [
+        "claude-haiku-5-5"
+      ],
+      "peak_context": 161579
+    },
+    "writers": {
+      "agents": 13,
+      "calls": 188,
+      "read": 17755733,
+      "out": 3302,
+      "models": [
+        "claude-sonnet-5-5"
+      ],
+      "peak_context": 167551
+    },
+    "failed": {
+      "agents": 12,
+      "calls": 89,
+      "read": 6263253,
+      "out": 5187,
+      "models": [
+        "<synthetic>",
+        "claude-sonnet-5-5"
+      ],
+      "peak_context": 111242
+    }
+  },
+  "total_read": 70840759
+}

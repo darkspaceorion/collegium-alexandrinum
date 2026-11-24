@@ -1,0 +1,115 @@
+{
+ "course_id": "i-want-to-learn-ai-in-depth--mvn3nyyu",
+ "depth": "deep",
+ "student": {
+  "goal": "Understand AI deeply enough to walk into a company, hear how it works, choose the right tools, connect them, and explain AI with real depth (short of writing code).",
+  "why": "Building an AI automation consulting practice (Procilium, B2B, and Field Forge, blue-collar trades) and wants to speak about AI credibly on LinkedIn and at a local business conference.",
+  "level": "intermediate",
+  "vocabulary": "expert (define every term on first use anyway)",
+  "known": ["what a model is", "harness", "APIs, CLI and MCP (has used them)", "n8n", "daily Claude Code, Claude and ChatGPT user", "neural networks and reinforcement learning in outline", "next-token prediction idea", "RAG concept at expert level", "basic memory and CLAUDE.md files"],
+  "gaps": ["what a transformer is", "agent vs skill", "memory and .md files in depth", "which models suit which tasks", "types of prompting", "newest concepts", "mapping a client's processes to tools", "tools beyond Claude, ChatGPT and n8n"],
+  "practice_style": "client and talk oriented: trades and service businesses, LinkedIn posts, a conference talk",
+  "feedback_on_v1": "The first lesson felt rushed and thin. He wants real education: the story and history, layered mechanism, many concrete examples, not compressed summaries."
+ },
+ "blocks": [
+  {"id": "b01", "title": "How language models really work", "objective": "Explain from first principles how a modern language model turns text into an answer, and why that drives cost, limits and behaviour.",
+   "lessons": [
+    {"id": "l1", "title": "From neural networks to attention: the story", "minutes": 35, "focus": "Neurons and layers in plain terms, how networks learn (loss, gradient descent, backprop at intuition level), deep learning's rise, recurrent networks and LSTMs reading text one word at a time, the memory bottleneck, seq2seq translation, Bahdanau attention (2014) as the fix, and why 'Attention Is All You Need' (2017) dropped recurrence entirely. Timeline diagram."},
+    {"id": "l2", "title": "Inside the transformer", "minutes": 40, "focus": "Embeddings (words as points in space, with worked analogy), positional information, self-attention with queries, keys and values explained intuitively and with a tiny worked example, multi-head attention, feed-forward layers, stacking layers, the next-token loop (autoregressive generation), sampling and temperature, why attention cost grows with context. Architecture diagram and attention flow diagram."},
+    {"id": "l3", "title": "Tokens: the unit of everything", "minutes": 30, "focus": "What a token is, how tokenizers are built (byte pair encoding intuition), many concrete examples (common words, rare words, names, numbers, code, URLs, other languages, emoji), why the same text costs different tokens on different models, tokens to words ratios, how to estimate cost for a client job with worked maths, why models struggle with spelling and counting letters."},
+    {"id": "l4", "title": "The context window", "minutes": 30, "focus": "Everything that fills the window (system prompt, tools, history, tool results, output, thinking), input vs output limits, what happens when it fills, context rot and the lost-in-the-middle effect, latency and cost as context grows, caching at a high level (cached tokens still count), worked example of sizing a client's context. Diagram of a request filling the window."},
+    {"id": "l5", "title": "From base model to assistant to reasoning model", "minutes": 35, "focus": "Pretraining on huge text, what a base model does if you talk to it, instruction tuning, reinforcement learning from human (and AI) feedback, constitutional and safety training at outline level, reasoning models and thinking (test-time compute), adaptive thinking and effort settings, training vs inference costs, why models hallucinate. Pipeline diagram."}
+   ]},
+  {"id": "b02", "title": "The model landscape and choosing models", "objective": "Pick and justify a model for a client job on quality, cost, speed, privacy and deployment.",
+   "lessons": [
+    {"id": "l1", "title": "Who makes the models: labs, families and tiers", "minutes": 30, "focus": "Closed frontier labs (Anthropic, OpenAI, Google) and their families and tiers, open-weight labs (Meta Llama, Qwen, DeepSeek, Mistral), mixture-of-experts, why tiers exist, what open-weight really means, licences."},
+    {"id": "l2", "title": "Reading a model card and a pricing page", "minutes": 25, "focus": "Context size, max output, price per million input and output tokens, cached input, batch discounts, rate limits, knowledge cutoff, modalities. Worked comparison of three real models from current pricing pages."},
+    {"id": "l3", "title": "Benchmarks and your own evals", "minutes": 25, "focus": "What common benchmarks measure and their limits (contamination, saturation, the jagged frontier), leaderboards, why your own task test beats any benchmark, how to run a small model bake-off for a client."},
+    {"id": "l4", "title": "Choosing a model for a client", "minutes": 30, "focus": "A decision framework (task difficulty, volume, latency, privacy, budget, deployment), routing small-to-large, local vs cloud, three worked client cases from trades and service businesses."}
+   ]},
+  {"id": "b03", "title": "Prompting craft", "objective": "Write, structure and test prompts that work reliably, and name the main techniques and when each fits.",
+   "lessons": [
+    {"id": "l1", "title": "Anatomy of a good prompt", "minutes": 30, "focus": "System vs user prompts, role, clear instructions, context, examples, output format, XML-style tags for structure, being explicit about what good looks like. Before-and-after rewrites."},
+    {"id": "l2", "title": "The core techniques", "minutes": 35, "focus": "Zero-shot, few-shot (how many examples, how to pick them), chain of thought and native thinking, prompt chaining, self-critique and evaluator loops, role prompting, when each helps and when it hurts. Diagram of a prompt chain."},
+    {"id": "l3", "title": "Structured outputs and tool calling", "minutes": 30, "focus": "Why free text breaks automations, JSON schemas, structured outputs guarantees and limits, how tool or function calling actually flows (model proposes a call, your code runs it, result returns), worked n8n-style example. Sequence diagram."},
+    {"id": "l4", "title": "Testing and improving prompts", "minutes": 25, "focus": "Building a small test set, judging outputs, changing one thing at a time, common failure patterns and their fixes, keeping a prompt log for client work."}
+   ]},
+  {"id": "b04", "title": "Context engineering", "objective": "Design what goes into a model's context for a real system, and keep it lean, cheap and accurate.",
+   "lessons": [
+    {"id": "l1", "title": "From prompt engineering to context engineering", "minutes": 25, "focus": "Why the field shifted, the whole token set, signal vs noise, just-in-time context and references, tool sets that don't overlap."},
+    {"id": "l2", "title": "Caching, compaction and context editing", "minutes": 30, "focus": "Prompt caching mechanics and prices, prefix order, cache-busting mistakes, compaction, context editing, sub-agents as clean windows. Worked cost example."},
+    {"id": "l3", "title": "Designing context for a client system", "minutes": 25, "focus": "A walkthrough designing the context for a front-desk or quoting assistant: what is fixed, what is retrieved, what is remembered, what is dropped. Diagram."}
+   ]},
+  {"id": "b05", "title": "Agents, workflows and skills", "objective": "Explain exactly when something is a workflow, an agent, a tool or a skill, and choose the right build for a client.",
+   "lessons": [
+    {"id": "l1", "title": "The spectrum: one call, workflow, agent", "minutes": 30, "focus": "Anthropic's definitions, why start simple, autonomy vs predictability, cost and error compounding, agent washing. Spectrum diagram."},
+    {"id": "l2", "title": "The five workflow patterns", "minutes": 35, "focus": "Prompt chaining, routing, parallelisation, orchestrator-workers, evaluator-optimiser, each with a diagram and a trades or service business example."},
+    {"id": "l3", "title": "How agents actually work", "minutes": 35, "focus": "The agent loop, tool use, observations, stopping conditions, the harness, permissions and human checkpoints, sub-agents, why agents fail. Loop diagram."},
+    {"id": "l4", "title": "Skills, SDKs and the agent ecosystem", "minutes": 30, "focus": "What a skill is (SKILL.md, progressive disclosure, scripts), Agent Skills as an open standard, skill vs agent vs tool settled with examples from NEXUS, Claude Agent SDK and OpenAI Agents SDK primitives, Claude Code as a harness."}
+   ]},
+  {"id": "b06", "title": "Memory", "objective": "Design how an AI system remembers things for a client, safely.",
+   "lessons": [
+    {"id": "l1", "title": "Why models forget", "minutes": 20, "focus": "Statelessness, short-term vs long-term memory, the context window as working memory, the human memory analogy and its limits."},
+    {"id": "l2", "title": "Memory files, notes and memory tools", "minutes": 30, "focus": "CLAUDE.md and AGENTS.md, how they load, writing good memory files, agent note-taking, the memory tool, databases and retrieval as memory, staleness."},
+    {"id": "l3", "title": "Designing memory for a client agent", "minutes": 25, "focus": "What to remember, where, for how long, consent and privacy, a worked design for a trades business assistant. Diagram."}
+   ]},
+  {"id": "b07", "title": "APIs, webhooks and authentication", "objective": "Understand how systems talk to each other well enough to scope any client integration.",
+   "lessons": [
+    {"id": "l1", "title": "APIs in depth", "minutes": 30, "focus": "REST, endpoints, methods, requests and responses, JSON, status codes, rate limits, pagination, retries and idempotency, reading API docs for a real tool. Sequence diagram."},
+    {"id": "l2", "title": "Webhooks and event-driven automation", "minutes": 25, "focus": "Push vs poll, webhook payloads, verification signatures, retries and duplicates, queues at a high level, examples from phone systems, CRMs and payment tools."},
+    {"id": "l3", "title": "Authentication and secrets", "minutes": 30, "focus": "API keys, OAuth 2.0 flow in plain terms, scopes and least privilege, service accounts, storing secrets safely (never in shared folders), rotating keys. OAuth diagram."}
+   ]},
+  {"id": "b08", "title": "MCP in depth", "objective": "Explain, choose and safely deploy MCP servers for clients.",
+   "lessons": [
+    {"id": "l1", "title": "What MCP is and why it won", "minutes": 30, "focus": "The N-by-M integration problem, host, client and server, tools, resources and prompts, adoption across vendors, the Agentic AI Foundation. Architecture diagram."},
+    {"id": "l2", "title": "Transports, auth and the 2025-26 changes", "minutes": 30, "focus": "Local stdio vs remote streamable HTTP, OAuth for MCP, the 2025-11-25 and 2026-07-28 spec revisions and what they changed, what to check before building."},
+    {"id": "l3", "title": "MCP for clients: building, buying and securing", "minutes": 30, "focus": "Using existing servers vs building, n8n's MCP Server Trigger, tool design for models, security risks (tool poisoning, over-broad tools, untrusted servers), a client scenario."}
+   ]},
+  {"id": "b09", "title": "Integration platforms", "objective": "Choose and use the right automation platform for a client, beyond n8n.",
+   "options": [
+    {"id": "make", "title": "Make", "summary": "Visual scenarios with strong branching (routers). Often cheaper per operation than Zapier. A good second tool for complex logic."},
+    {"id": "zapier", "title": "Zapier", "summary": "Easiest to learn, biggest app catalogue. What many small businesses already pay for, so you will meet it in the field."},
+    {"id": "ghl", "title": "GoHighLevel workflows", "summary": "CRM plus marketing automation in one product, popular with agencies and trades. Fits your GHL bootcamp and Upwork GHL jobs."}
+   ],
+   "lessons": [
+    {"id": "l1", "title": "The platform landscape and how to choose", "minutes": 30, "focus": "n8n, Make, Zapier, GoHighLevel and others: pricing models (tasks, operations, executions), hosting, AI features, when each wins, the client's existing stack as the deciding factor. Comparison table."},
+    {"id": "l2", "title": "n8n beyond the basics", "minutes": 30, "focus": "AI agent and LLM nodes, sub-workflows, error workflows and retries, credentials, self-hosted vs cloud, the MCP trigger, patterns for production client builds."},
+    {"id": "l3", "title": "Make in depth", "minutes": 30, "option": "make", "focus": "Scenarios, modules, routers and filters, iterators and aggregators, operations billing, error handlers, AI modules, rebuilding an n8n workflow in Make."},
+    {"id": "l3z", "title": "Zapier in depth", "minutes": 30, "option": "zapier", "focus": "Zaps, triggers and actions, paths and filters, formatter, tasks billing, AI steps and agents, auditing a client's Zaps, when to move them to n8n."},
+    {"id": "l3g", "title": "GoHighLevel workflows in depth", "minutes": 30, "option": "ghl", "focus": "Contacts, pipelines and triggers, workflow actions, AI features, sub-accounts and snapshots for agencies, webhooks to and from n8n, trades lead flow example."}
+   ]},
+  {"id": "b10", "title": "RAG in production", "objective": "Design, build-plan and evaluate a retrieval system over a client's documents.",
+   "options": [
+    {"id": "pgvector", "title": "Supabase pgvector", "summary": "Vectors inside Postgres. Best when the client already uses Postgres or Supabase. Simplest stack."},
+    {"id": "pinecone", "title": "Pinecone", "summary": "Fully managed vector database. Least to run, closed source, usually pricier at scale."},
+    {"id": "qdrant", "title": "Qdrant", "summary": "Open source, self-host or cloud, strong filtered search. Best for control or on-premises."}
+   ],
+   "lessons": [
+    {"id": "l1", "title": "The RAG pipeline end to end", "minutes": 30, "focus": "Ingest, chunk, embed, store, retrieve, generate; chunking strategies with examples; embeddings in depth; metadata. Pipeline diagram."},
+    {"id": "l2", "title": "Getting retrieval right", "minutes": 30, "focus": "Hybrid search (BM25 plus vectors), reranking, contextual retrieval and Anthropic's numbers, query rewriting, filters, long context vs RAG."},
+    {"id": "l3", "title": "Evaluating RAG and its failure modes", "minutes": 25, "focus": "Golden sets, retrieval metrics (Recall@K, MRR, NDCG), answer metrics (faithfulness, relevance), failure modes and fixes, refusing when unsure."},
+    {"id": "l4", "title": "Supabase pgvector in practice", "minutes": 20, "option": "pgvector", "focus": "pgvector, HNSW, filtered search, row-level security, sizing and cost, when to outgrow it."},
+    {"id": "l4p", "title": "Pinecone in practice", "minutes": 20, "option": "pinecone", "focus": "Indexes, namespaces, metadata filters, serverless pricing, latency, lock-in trade-offs."},
+    {"id": "l4q", "title": "Qdrant in practice", "minutes": 20, "option": "qdrant", "focus": "Collections, payload filters, self-hosting vs cloud, quantisation, on-premises clients."}
+   ]},
+  {"id": "b11", "title": "Mapping a client's processes to AI", "objective": "Run discovery and turn a business's processes into a ranked, costed automation plan.",
+   "lessons": [
+    {"id": "l1", "title": "Discovery: interviews and process maps", "minutes": 35, "focus": "Who to interview, questions that surface real work, walking through yesterday, process mapping (trigger, steps, tools, handoffs, output), spotting waste. Example process map diagram."},
+    {"id": "l2", "title": "Finding, scoring and costing opportunities", "minutes": 30, "focus": "What makes a good candidate, value vs effort scoring, ROI and payback maths with a worked example, risk, data access."},
+    {"id": "l3", "title": "From map to proposal", "minutes": 30, "focus": "Choosing the build level for each step (automation, LLM step, agent, human), phasing, writing the proposal, setting expectations, a worked ranked plan for an electrician."}
+   ]},
+  {"id": "b12", "title": "Reliability, safety and cost", "objective": "Make client builds dependable and safe, and explain the risks honestly.",
+   "lessons": [
+    {"id": "l1", "title": "Evals: knowing whether it works", "minutes": 30, "focus": "What evals are, building eval sets, automated graders and LLM-as-judge, regression testing on every change, monitoring in production."},
+    {"id": "l2", "title": "Security: prompt injection and excessive agency", "minutes": 35, "focus": "The OWASP LLM Top 10 (2025), direct and indirect prompt injection with real examples, excessive agency, defences (least privilege, separation, human checkpoints), a hostile-email walkthrough. Diagram."},
+    {"id": "l3", "title": "Privacy, data and compliance", "minutes": 25, "focus": "What vendors do with API data (training defaults, retention, zero data retention), personal data handling, NIST AI 600-1 in outline, what to tell a client and what to check first."},
+    {"id": "l4", "title": "Cost control and observability", "minutes": 25, "focus": "Where AI cost comes from, routing, caching, batching, output caps, budgets and alerts, logging and tracing, a monthly cost estimate worked example."}
+   ]},
+  {"id": "b13", "title": "The frontier, and how to talk about it", "objective": "Speak credibly about where AI is now and where it is going, with numbers you can defend.",
+   "lessons": [
+    {"id": "l1", "title": "What changed in the last 18 months", "minutes": 30, "focus": "Reasoning models, computer use and browser agents, agent SDKs, real-time voice agents, MCP as shared infrastructure, multimodal, what each means for small businesses."},
+    {"id": "l2", "title": "Adoption: what businesses are actually doing", "minutes": 25, "focus": "US Census Bureau business AI use and the small-firm gap, McKinsey and Stanford AI Index figures with caveats, Gartner's agentic cancellation forecast, reading statistics critically."},
+    {"id": "l3", "title": "Building authority: posts and a conference talk", "minutes": 30, "focus": "One claim, one source, one story: a LinkedIn post structure, a 20-minute local business talk outline with an opening, three ideas and a call to action, handling hard questions."}
+   ]}
+ ]
+}

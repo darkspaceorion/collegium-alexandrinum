@@ -1,0 +1,274 @@
+{
+ "order": 1,
+ "title": "From neural networks to attention: the story",
+ "minutes": 35,
+ "objective": "After this you can tell the story from neural networks through RNNs and LSTMs to attention and the transformer, explain why each step happened, and correct the common myths about it.",
+ "option": null,
+ "sections": [
+  {
+   "h": "The problem: teaching a machine to read",
+   "md": "You use Claude every day. You type a sentence and a sensible answer comes back. It feels like magic, and magic is a bad foundation for advising clients. When a plumber's office manager asks you \"why did it get that wrong?\" or \"why does it cost so much when I paste in a long email?\", you need a real answer. Real answers start with the machine underneath.\n\nThis lesson tells you how that machine came to exist. It is a story of about forty years, a handful of stubborn researchers, and four big ideas. Each idea fixed a problem the previous one left behind. If you hold the story in your head, the mechanics in the next lessons will feel obvious instead of arbitrary.\n\n### What we are actually trying to build\n\nA **language model** is a program that, given some text, predicts what text comes next. You already know this idea in outline. Your phone's keyboard does a tiny version: type \"see you at\" and it offers \"the\", \"my\", \"home\". A modern model does the same job, but with an enormous amount of learned knowledge behind each guess.\n\nWhy would next-word prediction produce something that can write a quote, summarise a contract or debug an n8n workflow? Because to predict the next word well, you have to understand a lot. Take this sentence: \"The homeowner called the roofer because the ___ was leaking.\" To guess \"roof\", you need to know that roofers deal with roofs, that leaks come from roofs, and that \"the ___\" means a thing in the house. Prediction forces the model to absorb facts, grammar and common sense.\n\n### Why this was hard for decades\n\nComputers are good at rules. Language is a mess of exceptions. Early attempts, from the 1950s on, tried to write the rules by hand: a list of grammar rules, a dictionary of meanings. They broke the moment real people typed real sentences. \"Bank\" means two things. \"It\" can point to almost anything. \"Not bad\" means good.\n\nThe alternative was to let the machine learn the patterns from examples instead of being told them. That is the **neural network** approach, and it is where our story begins. There are four chapters:\n\n1. **Neural networks that learn** (1980s): a way to adjust a machine from examples.\n2. **Deep learning** (2006 to 2012): making those networks big enough to matter.\n3. **Recurrent networks** (1990s to 2014): giving them a way to read text in order.\n4. **Attention** (2014 to 2017): fixing what recurrence got wrong, and then throwing recurrence away.\n\nBy the end you will be able to explain, in plain words, why the 2017 paper was titled \"Attention Is All You Need\". That is a title you will see on conference slides, so it is worth knowing what it means.",
+   "diagram": null,
+   "check": {
+    "q": "Why does being good at predicting the next word force a model to learn facts about the world? Use the roofer sentence in your answer.",
+    "a": "Because to pick the right word you need the knowledge behind it. To fill in 'The homeowner called the roofer because the ___ was leaking' with 'roof', the model must know what roofers work on and where leaks come from. Prediction is a test that can only be passed by absorbing facts, grammar and common sense from the training text."
+   }
+  },
+  {
+   "h": "A neuron, a layer, a network",
+   "md": "Start with the smallest part. An **artificial neuron** is a tiny calculator with three steps: it takes some numbers in, multiplies each by a **weight**, adds them up, and then passes the total through a simple rule that decides how strongly to \"fire\". The name comes from loose inspiration by brain cells, but do not take the biology seriously. It is arithmetic.\n\n### A worked example: scoring a lead\n\nImagine a neuron that scores how urgent a plumbing enquiry is, from 0 to 1. It gets three inputs, each already turned into a number between 0 and 1:\n\n- Mentions water actively leaking: 1 (yes)\n- Customer is a returning client: 0 (no)\n- Message sent outside office hours: 1 (yes)\n\nThe neuron has a weight for each input. Say the weights are 0.8, 0.3 and 0.4. A bigger weight means \"this input matters more\".\n\nThe neuron multiplies and adds: (1 x 0.8) + (0 x 0.3) + (1 x 0.4) = 1.2. It then squashes that into the 0 to 1 range with a smooth curve, so a total of 1.2 might become about 0.77. Read that as \"fairly urgent\".\n\nThat is the whole neuron. The weights are the knowledge. Change the weights and the same inputs give a different score. A neuron that has the right weights is a tiny expert at one narrow judgement.\n\nThe squashing step has a name: the **activation function**. It matters more than it looks. Without it, stacking neurons would collapse into one big multiplication and the network could only learn straight-line relationships. The bend in the curve is what lets many neurons together learn curved, tangled patterns.\n\n### From one neuron to a layer to a network\n\nOne neuron makes one judgement. Put many neurons side by side, all looking at the same inputs but with different weights, and you have a **layer**. Each neuron in the layer picks out a different pattern. One might respond to \"leak plus night\". Another to \"returning customer plus invoice\".\n\nNow feed the outputs of that layer into a second layer. The second layer does not see the raw message. It sees the patterns the first layer found, and it looks for patterns among patterns. A third layer finds patterns among those. That stack is a **neural network**, and the layers between the input and the final answer are called **hidden layers**.\n\nIn a picture-recognition network, researchers found the early layers learn edges, the middle layers learn shapes like wheels and eyes, and the late layers learn whole objects. Nobody told them to. The layering made it happen. The word **deep** in deep learning simply means \"many layers\".\n\n### Parameters: the number you will hear quoted\n\nEvery weight in the network is a **parameter**. When someone says a model has \"70 billion parameters\", they mean 70 billion of these adjustable numbers. The model's whole knowledge, everything it knows about plumbing, French and Python, is stored as those numbers. There is no database of facts inside. Just weights.\n\nThat raises the obvious question: who sets the weights? Nobody sets them by hand. The network learns them. That is the next section.",
+   "diagram": null,
+   "check": {
+    "q": "In the lead-scoring neuron, what would happen to the score if you raised the weight on 'returning client' from 0.3 to 0.9, for a message from a returning client? And what does that tell you about what weights are?",
+    "a": "The returning-client input would then contribute 1 x 0.9 instead of 1 x 0.3, so the total rises by 0.6 and the urgency score goes up. Weights are how much each input matters to the judgement. The network's knowledge is stored in those numbers, which is why a model with billions of parameters can hold so much."
+   }
+  },
+  {
+   "h": "How a network learns: loss, gradient descent and backpropagation",
+   "md": "A new network starts with random weights, so its first answers are nonsense. Learning is the process of nudging the weights, again and again, until the answers get good. Three ideas make that work.\n\n### Idea 1: loss, a score for how wrong you are\n\nShow the network an example where you know the right answer. It gives its guess. You then compute the **loss**: a single number that says how far the guess is from the truth. Zero loss means perfect. A big loss means badly wrong. For text, the guess is a probability for each possible next word, and the loss is high if the real next word got a low probability.\n\n### Idea 2: gradient descent, walking downhill\n\nPicture the loss as a landscape. Every possible setting of the weights is a spot on the ground, and the height at that spot is the loss. You want the lowest valley. You cannot see the whole landscape, but you can feel the slope under your feet. So you take a small step in the downhill direction, feel the slope again, and step again. That is **gradient descent**. The **gradient** is just the slope. The size of each step is the **learning rate**.\n\nHere is the smallest possible example, with real numbers. One weight, w. The network's rule is: prediction = w x input. We show it input 2, and the right answer is 10. The perfect weight is therefore 5. We start with a bad guess, w = 1.\n\n| Step | w | Prediction | Error | Loss (error squared) | Slope |\n|---|---|---|---|---|---|\n| 1 | 1.00 | 2.00 | -8.00 | 64.0 | -32.0 |\n| 2 | 2.60 | 5.20 | -4.80 | 23.0 | -19.2 |\n| 3 | 3.56 | 7.12 | -2.88 | 8.3 | -11.5 |\n| 4 | 4.14 | 8.27 | -1.73 | 3.0 | -6.9 |\n\nThe slope formula for this loss is 2 x error x input, so at step 1 it is 2 x (-8) x 2 = -32. A negative slope means \"raising w lowers the loss\". With a learning rate of 0.05, the update is w = 1 - 0.05 x (-32) = 2.6. Each step lands closer to 5, and the steps shrink on their own because the slope shrinks as we approach the valley floor.\n\nA real model does exactly this, but with billions of weights at once, and with the loss averaged over huge batches of examples. The principle is identical.\n\n### Idea 3: backpropagation, who is to blame\n\nWith one weight, the slope is easy. With a network of many layers, a wrong answer at the end is caused by weights in every layer. How much blame does each one get?\n\n**Backpropagation** answers that. It works backwards from the error at the output, layer by layer, using the chain rule from calculus, and hands every weight its own slope: \"if you nudge this weight up a little, the loss changes by this much\". Then gradient descent moves them all at once.\n\nA useful analogy is a restaurant that serves a bad meal. The customer complains to the manager (the output). The manager asks the head chef what went wrong. The head chef asks the line cooks. Each person passes the question back down the chain and reports how much of the problem came from their station. Backprop is that blame chain, done with arithmetic, in a fraction of a second.\n\n### The history, correctly told\n\nIn October 1986, David Rumelhart, Geoffrey Hinton and Ronald Williams published \"Learning representations by back-propagating errors\" in *Nature*. It showed that backprop lets hidden layers learn useful internal features by themselves. It is often described as the invention of backpropagation. That is too generous. The underlying maths had been found several times before, with roots in the 1960s. The 1986 paper **popularised** it and showed it worked on real problems. Say \"popularised\" if you want to be precise on a stage, and an audience member who knows the field will trust you more.\n\n### Why this matters for you\n\nEverything a model knows was put there by this loop: guess, measure the error, nudge the weights, repeat, billions of times. That is why training is expensive (so many nudges) and why using the finished model is cheap by comparison (one forward pass, no nudging). You will see that split again in Lesson 5.",
+   "diagram": null,
+   "check": {
+    "q": "In the one-weight example, why do the steps get smaller on their own even though the learning rate never changes?",
+    "a": "Because the step size is learning rate times slope, and the slope shrinks as the weight gets closer to the best value. At the start the slope is -32 so the step is 1.6. By step 3 the slope is about -11.5 so the step is about 0.58. Near the bottom of the valley the ground is flat, so the steps are tiny."
+   }
+  },
+  {
+   "h": "Deep learning arrives: 2006 to 2012",
+   "md": "After 1986, neural networks had a decade of excitement and then a long, cold stretch. Networks with more than a couple of layers were hard to train. Computers were slow. Data sets were small. Other methods, such as support vector machines, did better on most benchmarks, and funding drifted away. A small group, Hinton in Toronto, Yoshua Bengio in Montreal and Yann LeCun in New York among them, kept going.\n\n### Three things changed\n\n**Better training methods.** In 2006 Geoffrey Hinton, Simon Osindero and Yee-Whye Teh published \"A fast learning algorithm for deep belief nets\". It showed a greedy way to train a deep network one layer at a time, which got deep networks off the ground. It is one of the papers usually credited with kicking off the \"deep learning\" revival.\n\n**Data.** The internet produced labelled images, text and clicks at a scale nobody had before. The ImageNet project assembled over a million labelled pictures for a yearly contest.\n\n**GPUs.** A graphics card is built to do thousands of simple multiplications at once, which is exactly what a neural network needs. Researchers realised they could rent that power from video gamers' hardware.\n\n### The AlexNet moment\n\nIn 2012, Alex Krizhevsky, Ilya Sutskever and Geoffrey Hinton entered a deep network called **AlexNet** into the ImageNet contest. It cut the top-5 error rate (the real answer is not in the model's five best guesses) to 15.3 percent, far ahead of the field. It had eight layers and about 60 million parameters, and they trained it on two GPUs. The crowd noticed. Within a few years nearly every serious vision team switched to deep networks, and investment poured in.\n\nA caution about the story. AlexNet is often presented as the lone spark. It was not. A GPU-trained convolutional network from Jurgen Schmidhuber's lab, called DanNet, had already won image contests in 2011 on smaller data sets. AlexNet's win on the big, famous ImageNet contest is what made the world look. As a rule, \"who started it\" stories in AI are rarely clean, and it is safer to say \"a turning point\" than \"the beginning\".\n\n### What this meant for language\n\nDeep learning's first big wins were in images and speech. Language was harder, because of one stubborn fact: **text is a sequence**. Pictures arrive all at once, a grid of pixels. A sentence arrives one word at a time, and the meaning of a word depends on the words before it. A network that takes a fixed-size input does not fit that shape. Researchers needed a design that could read in order.\n\n### Counting the cost\n\nNotice what drove progress: more data, more compute, and bigger networks. That pattern, more of everything, kept working. In January 2020 Jared Kaplan and colleagues at OpenAI measured it precisely, in \"Scaling laws for neural language models\". They found the loss of a language model falls as a smooth power law as you add parameters, data and compute. That finding is the intellectual basis for the enormous training runs you read about, and you will see it again in Lesson 5.",
+   "diagram": "flowchart LR\n  A[1986 Backprop popularised] --> D[1997 LSTM for sequences]\n  D --> B[2006 Deep belief nets]\n  B --> C[2012 AlexNet wins ImageNet]\n  C --> E[2014 Seq2seq translation]\n  E --> F[2014 Attention added]\n  F --> G[2017 Transformer]\n  G --> H[2020 Scaling laws]",
+   "check": {
+    "q": "Name the three ingredients that came together around 2012 to make deep learning take off, and say why a sentence is a harder input for a network than a photo.",
+    "a": "Better training methods, large data sets (like ImageNet) and GPUs for fast arithmetic. A photo is a fixed grid that arrives all at once. A sentence is a sequence of varying length where each word's meaning depends on the words before it, so the network needs some way to read in order and remember."
+   }
+  },
+  {
+   "h": "Reading one word at a time: recurrent networks",
+   "md": "How do you make a network read a sentence of any length? The obvious answer, and the one researchers settled on in the 1980s and 1990s, is to copy how you read. You take one word at a time and keep a running summary in your head.\n\n### The idea\n\nA **recurrent neural network**, or RNN, has one small network that it uses over and over. At each step it receives two things: the next word, and its own **hidden state** from the previous step. The hidden state is a list of numbers that acts as a summary of everything read so far. The network combines the two and produces a new hidden state. Then it moves on to the next word.\n\nThink of a receptionist taking notes while a customer rambles on the phone. After each sentence she updates a single sticky note. When the call ends, the sticky note is all she has. Everything she knows about the call must fit on that note.\n\n### A worked example\n\nTake the sentence: \"The boiler in the flat above ours burst, so we called the plumber.\" We want to predict \"plumber\" at the end, or answer \"what burst?\".\n\n- Step 1: read \"The\". Note says: starting a sentence.\n- Step 2: read \"boiler\". Note: a boiler is the topic.\n- Steps 3 to 6: read \"in the flat above\". Note: boiler, located above.\n- Step 7: read \"ours\". Note: boiler, above us.\n- Step 8: read \"burst\". Note: boiler burst, above us.\n- ...and so on to the end.\n\nAt each step the network rewrites the note. It must decide what to keep and what to overwrite. By the end, \"boiler\" was written down 14 steps ago. Whether it is still on the note depends on whether the network learned to protect it.\n\n### Why this design was a good idea\n\nIt handles any length, because the same small network is reused. It reads in order, like we do. It produces a prediction at every step, so you can train it on next-word prediction by checking each word against the real one. For years it was the standard way to do translation, speech recognition and text generation.\n\n### Why it was also a trap\n\nThe RNN has two serious flaws, and they define the rest of the story.\n\n**Flaw 1: it is slow.** To process word 50 you must have finished word 49, which needed word 48. You cannot do the steps in parallel. A GPU can do a million things at once, but an RNN gives it one thing to do at a time. That makes training on huge text collections painfully slow.\n\n**Flaw 2: it forgets.** The sticky note has a fixed size. As the text grows, new information must overwrite old. Information from far back gets squeezed out or blurred. There is also a nastier, technical version of this problem that shows up during learning, covered next.",
+   "diagram": "flowchart LR\n  A[Word 1] --> H1[State 1]\n  H1 --> H2[State 2]\n  B[Word 2] --> H2\n  H2 --> H3[State 3]\n  C[Word 3] --> H3\n  H3 --> H4[State 4]\n  D[Word 4] --> H4\n  H4 --> O[Prediction]",
+   "check": {
+    "q": "In the boiler sentence, why does an RNN find it harder to use 'boiler' at the end than a word that appeared two steps ago? Give two separate reasons.",
+    "a": "First, the hidden state is a fixed-size summary that gets rewritten at every step, so older information is gradually overwritten or blurred, and 'boiler' was written 14 steps earlier. Second, during learning the error signal has to travel back through all those steps, and it tends to shrink along the way, so the network gets little signal to learn to protect distant information."
+   }
+  },
+  {
+   "h": "The memory problem and the LSTM fix (1997)",
+   "md": "The forgetting flaw was not just a feeling. In the early 1990s, researchers including Sepp Hochreiter showed it mathematically. It is called the **vanishing gradient problem**.\n\n### Why gradients vanish\n\nRemember backprop passes blame backwards through the network. In an RNN, \"backwards\" includes going back through time, from the last word to the first. At each step the blame signal gets multiplied by a number. If that number is a bit less than one, say 0.9, then after 50 steps the signal is 0.9 to the power 50, which is about 0.005. Half a percent. The network at word 1 receives almost no instruction about how it should have behaved, so it never learns to carry information across long gaps.\n\nAn analogy is a message passed down a line of 50 people by whispering. Each person drops a little. By the end it is mush. If instead each number is a bit more than one, the message gets louder and louder until it is a scream, and learning blows up. The technical name for that is the exploding gradient problem. Both come from repeated multiplication.\n\n### The LSTM\n\nIn November 1997, Hochreiter and Jurgen Schmidhuber published \"Long Short-Term Memory\". The **LSTM** added a separate **memory cell** that runs alongside the hidden state. The cell passes information from step to step with very little change, like a conveyor belt running past the workers. Gentle gates sit beside the belt. The authors called the clean path the \"constant error carousel\": because the memory is carried forward unchanged, the blame signal does not shrink as it travels back. Their results showed error signals surviving over more than a thousand time steps.\n\nThe gates are small learned switches that decide, for each step:\n\n- What new information to write onto the belt.\n- What information to read off the belt for use now.\n- What to erase (a forget gate, which a secondary source says was added in 2000, so treat the date as approximate).\n\nThink of it as upgrading the receptionist's single sticky note into a notepad with a pen, a rubber and a clear rule about what is worth writing down. She can now keep \"the burst boiler is above the flat\" safely for a long time, and only erase it when the topic changes.\n\n### The reign of the LSTM\n\nLSTMs worked. From roughly 2010 to 2016 they were the engine behind speech recognition on phones, handwriting recognition and machine translation. If you used Google Translate or a voice assistant in the mid-2010s, an LSTM was very likely doing the work.\n\n### What the LSTM did not fix\n\nIt fixed forgetting, partly. It did not fix the other flaw. An LSTM still reads word by word, so it is still slow to train, and still has a fixed-size memory. Information still has to be squeezed through one narrow channel. That limit becomes painfully visible in the next chapter, where researchers try to translate whole sentences.",
+   "diagram": null,
+   "check": {
+    "q": "Why does repeated multiplication cause both vanishing and exploding gradients, and what is the LSTM's trick for avoiding it?",
+    "a": "Passing the blame signal back through many steps multiplies it by a similar number each time. If that number is a little under one the signal shrinks toward nothing, and if it is a little over one the signal grows out of control. The LSTM adds a memory cell that carries information forward almost unchanged (the constant error carousel), with learned gates controlling writes, reads and erasing, so the signal survives long distances."
+   }
+  },
+  {
+   "h": "Sequence to sequence: translating with two LSTMs (2014)",
+   "md": "Translation is the cleanest test of language understanding. You must read a sentence in one language, grasp its meaning, and write it in another, where the word order and grammar may be completely different.\n\n### The encoder-decoder design\n\nIn 2014, Ilya Sutskever, Oriol Vinyals and Quoc Le at Google published \"Sequence to sequence learning with neural networks\". The design was simple and elegant:\n\n1. An **encoder** LSTM reads the English sentence one word at a time.\n2. When it reaches the end, its final hidden state is taken as a summary of the whole sentence. This is one fixed-size list of numbers, the **context vector**.\n3. A **decoder** LSTM starts from that vector and writes the French sentence one word at a time, each new word guided by the words it has already written.\n\nIt was remarkable that this worked at all. An English-to-French system built this way reached a BLEU score of 34.8 on the standard test. (BLEU is a 0 to 100 score for how closely a translation overlaps with human reference translations, so higher is better and 34.8 was competitive with the best systems of the day.) One odd trick in the paper: feeding the source sentence **backwards** helped. Reversing the English put the first English words close to the first French words they map to, which shortened the distances the memory had to cross.\n\n### The bottleneck\n\nLook at step 2 again. The entire meaning of the input sentence, whether it is five words or fifty, has to be squashed into one vector of fixed size. It is like asking an interpreter to listen to a full paragraph, write one sentence summary on a card, put the original away, and then translate from the card alone.\n\nFor short sentences, a card is enough. For long sentences, it fails. Researchers saw translation quality fall off as sentences got longer. The card ran out of room, and details such as names, numbers and which noun a pronoun referred to were the first to be lost.\n\nFor a business parallel, imagine a plumber's dispatcher who takes a long, detailed call and then must hand the engineer one text message of 20 words. Every extra detail she tries to include squeezes out something else. The engineer turns up without the gate code.\n\n### The question that led to attention\n\nThe bottleneck suggested an obvious fix, and it is the idea of the next section. Why throw the original away? The encoder already produced a hidden state at every word. Why not keep all of them, and let the decoder look at whichever ones it needs while writing each word? The interpreter should be allowed to keep the transcript on the desk.\n\nThat is a very human fix. When you translate a long paragraph, you do not memorise it. You write one sentence at a time and keep glancing back at the source for the bit you are on.",
+   "diagram": "flowchart LR\n  A[English words] --> E[Encoder LSTM]\n  E --> V[One fixed vector]\n  V --> D[Decoder LSTM]\n  D --> F[French words]\n  V -.-> X[Bottleneck, details lost on long input]",
+   "check": {
+    "q": "What exactly is the bottleneck in the 2014 encoder-decoder, and what would you expect to go wrong first as sentences get longer?",
+    "a": "The whole input sentence has to be compressed into one fixed-size vector before the decoder starts. As sentences lengthen the vector runs out of room, so the first things to be lost are specifics: names, numbers, rare words and which noun a pronoun points to. Translation quality drops with sentence length."
+   }
+  },
+  {
+   "h": "Attention: let the decoder look back (Bahdanau, 2014)",
+   "md": "In September 2014, Dzmitry Bahdanau, Kyunghyun Cho and Yoshua Bengio posted \"Neural machine translation by jointly learning to align and translate\". It was published at ICLR 2015. It is the paper that introduced what we now call **attention** for translation, and it is the true ancestor of everything in this block.\n\n### The idea in one sentence\n\nInstead of forcing the decoder to work from one summary vector, keep the encoder's state at every input word, and at each output word let the decoder compute a **weighted average** of all of them, giving more weight to the ones that matter right now.\n\n### A worked example\n\nTranslate \"The red van arrived\" into French: \"La camionnette rouge est arrivee.\" (The French puts the adjective after the noun, so the order flips.)\n\nThe encoder reads the four English words and keeps four states: S1 (The), S2 (red), S3 (van), S4 (arrived).\n\nNow the decoder writes the French word for \"van\", \"camionnette\". To decide how much each English state matters, it scores each one against its own current state. The scores, after turning them into weights that add to 1, might look like this (illustrative numbers):\n\n| English word | Attention weight |\n|---|---|\n| The | 0.05 |\n| red | 0.10 |\n| van | 0.80 |\n| arrived | 0.05 |\n\nThe decoder builds a context vector that is 80 percent S3, plus a little of the others. It writes \"camionnette\". Next it writes \"rouge\". Now the weights swing: \"red\" gets about 0.85. The decoder is looking at a different part of the input for each output word. The picture of which words it looked at, plotted as a grid, shows the French and English words lining up, even crossing over where the grammar flips. The authors showed such alignment grids in the paper.\n\nNobody told the model which words align. It learned to look in the right places because looking in the right places lowered the loss.\n\n### How the weights are computed\n\nEach score comes from a tiny extra neural network that takes the decoder's current state and one encoder state and outputs a number. The numbers go through the **softmax** function, which converts any list of numbers into positive weights that sum to 1. Softmax is worth remembering. It will appear in Lesson 2, and again when we talk about temperature. Bigger score, bigger share of the weight.\n\n### What it fixed, and the result\n\nThe single-vector bottleneck vanished. The decoder could reach the full transcript. The authors reported that the system matched the phrase-based statistical translation system on English-to-French, which had been refined for over a decade, and, crucially, did not collapse on long sentences the way the plain encoder-decoder did.\n\n### A crucial misconception to avoid\n\nPeople often say \"attention was invented in 2017\". It was not. Attention was added to recurrent networks in 2014 and was spreading fast by 2015. What happened in 2017 is more surprising, and it is the next section.\n\n### What had not changed\n\nThe model was still built on recurrent networks. Attention was an add-on to give the decoder better access. The reading itself was still word by word, still slow, still serial. A natural question follows. If attention does the real work of connecting words, is the recurrence needed at all?",
+   "diagram": "flowchart TD\n  S1[State The] --> W[Weights from softmax]\n  S2[State red] --> W\n  S3[State van] --> W\n  S4[State arrived] --> W\n  Q[Decoder is writing camionnette] --> W\n  W --> C[Weighted mix of states]\n  C --> N[Next French word]",
+   "check": {
+    "q": "In the 'red van' example, why do the weights have to add up to 1, and what would be lost if the decoder simply took the average of all four states every time?",
+    "a": "Weights adding to 1 make the context vector a proper blend, like percentages of a mix, so its size stays stable. A plain average gives every word equal say, so it is the same context for every output word. The point of attention is that the blend changes at each step, leaning 80 percent on 'van' when writing 'camionnette' and on 'red' when writing 'rouge'."
+   }
+  },
+  {
+   "h": "Attention Is All You Need (2017)",
+   "md": "By 2017 the best translation systems were LSTMs with attention bolted on. They were good and they were slow to train. A team at Google, Ashish Vaswani and seven co-authors, asked the question at the end of the last section. If attention is doing the work, delete the recurrence.\n\n### What the paper did\n\nThe paper, \"Attention is all you need\", appeared on arXiv in June 2017. It described a new design, the **transformer**, with no recurrent parts and no convolutions. It was attention, layered, plus ordinary feed-forward layers. We will build it piece by piece in Lesson 2.\n\nThe big shift is **parallelism**. In an RNN, word 50 waits for word 49. In a transformer, every word looks at every other word at the same time, in one big batch of arithmetic. That suits a GPU perfectly. Training that took days on a recurrent model could be done in a fraction of the time, which meant you could afford to train on much more text.\n\n### The result\n\nOn the standard WMT 2014 English-to-German translation test, the transformer reached 28.4 BLEU. That was more than 2 BLEU points above the previous best results, including ensembles of several models combined. It also trained at a fraction of the cost of the previous leaders. It was better, and it was cheaper. That combination is rare, and it is why the idea spread so quickly.\n\n### Why the title is a slogan\n\n\"Attention is all you need\" is a deliberately bold claim. It says you do not need the recurrent memory that everyone assumed was essential for language. You do not need to read word by word. Let every word attend to every other word, directly, and stack that process in layers, and the network builds understanding by itself.\n\nThe shape of the idea is a trade. Recurrence gave the model a built-in sense of order and a small memory, but it was serial and forgetful. Attention gives the model direct access to every word, in parallel, but loses the built-in sense of order (so the transformer must be given position information explicitly, Lesson 2) and gets more expensive as the text grows longer (the cost grows with the square of the text length, Lesson 2 and Lesson 4).\n\n### What happened next\n\nWithin a couple of years, transformers took over language. Google's BERT (2018) and OpenAI's GPT series (from 2018) both used transformer parts. OpenAI scaled up the idea of training a transformer to predict the next word on a huge slice of the internet. GPT-3, in 2020, with 175 billion parameters, showed that a big enough next-word predictor could follow written instructions with no retraining. ChatGPT in late 2022 packaged the same idea for ordinary users. Claude, Gemini, Llama and nearly every language model you have heard of are transformers, or close relatives.\n\nSo when you hear \"the transformer\", you can now say what it replaced and why. It replaced recurrence, to cure slow training and forgetful memory, using the attention trick that had been invented three years earlier.",
+   "diagram": null,
+   "check": {
+    "q": "Name the two practical benefits of dropping recurrence, and one thing the transformer lost by doing so.",
+    "a": "Benefits: all positions can be processed in parallel, so training is much faster on GPUs and can use far more data; and every word has direct access to every other word, so distance does not blur memory. Loss: the built-in sense of word order, so position information must be supplied explicitly, and cost that grows with the square of the text length."
+   }
+  },
+  {
+   "h": "Misconceptions, and the whole story on one page",
+   "md": "A good teacher corrects the myths before they stick. Here are the five you are most likely to hear, with the accurate version.\n\n### Five myths, corrected\n\n1. **\"Backpropagation was invented in 1986.\"** The maths had been found several times earlier. The 1986 paper popularised it and proved it practical. Say \"popularised\".\n2. **\"AlexNet started deep learning in 2012.\"** It was a turning point, not a starting gun. The 2006 deep belief net paper, GPU-trained networks like DanNet in 2011, and decades of earlier work all fed into it.\n3. **\"Attention was invented in 2017.\"** Bahdanau, Cho and Bengio published it in 2014 as a fix for recurrent encoder-decoders. The 2017 paper made attention the whole architecture.\n4. **\"The model looks things up like a database.\"** Nothing is stored as a record. Knowledge lives as billions of weights adjusted by training. When the model answers, it computes. It does not retrieve.\n5. **\"It understands like a person.\"** It is a very good pattern learner trained on next-word prediction. Whether that counts as understanding is argued by serious researchers. As an adviser, a safer line is \"it behaves as if it understands in many tasks and fails in surprising ways in others\".\n\n### The whole story in a table\n\n| Problem | Fix | Who and when | What it left behind |\n|---|---|---|---|\n| Machine cannot learn from examples across layers | Backpropagation and gradient descent | Popularised by Rumelhart, Hinton and Williams, 1986 | Deep networks hard to train, data and compute scarce |\n| Deep networks too slow, data too small | Better training, big data, GPUs | Hinton and team 2006, AlexNet 2012 | Language is a sequence, not a grid |\n| Reading in order | Recurrent networks | 1980s onward | Slow, forgetful, vanishing gradients |\n| Forgetting | LSTM memory cell and gates | Hochreiter and Schmidhuber, 1997 | Still serial, still fixed-size memory |\n| Translating whole sentences | Encoder and decoder LSTMs | Sutskever, Vinyals, Le, 2014 | Single-vector bottleneck |\n| Bottleneck | Attention over all encoder states | Bahdanau, Cho, Bengio, 2014 | Still built on recurrence |\n| Slow serial reading | Drop recurrence, use only attention | Vaswani and colleagues, 2017 | Cost grows with the square of text length, no built-in order |\n\n### What to carry into Lesson 2\n\nHold on to three things.\n\n- A model is a pile of **weights** set by a long process of guess, measure, nudge.\n- Text is a **sequence**, and the history of the field is the search for the best way to let a network use earlier words.\n- **Attention** is a weighted blend of what came before, with the weights decided by the current need. In the transformer, it happens for every word, in every layer, all at once.\n\nLesson 2 opens the box. We will turn words into numbers, compute attention with a tiny numeric example you can follow by hand, stack the layers, and watch the model write one token at a time.",
+   "diagram": null,
+   "check": {
+    "q": "A conference attendee says 'transformers were invented because RNNs could not use attention'. What is wrong with that sentence, and how would you correct it politely?",
+    "a": "It reverses the history. RNNs did use attention from 2014, when Bahdanau and colleagues added it to fix the single-vector bottleneck. The transformer in 2017 kept attention and removed the recurrence, because recurrence made training slow and serial. A polite correction: 'Attention actually came first, as a patch on RNNs. The transformer was the move that said the patch was the only part you needed.'"
+   }
+  }
+ ],
+ "field": {
+  "client": "**How this shows up in client work.** You will meet three situations where this history is useful.\n\n**1. \"Why is it so bad at long documents?\"** A dental practice owner pastes a 40-page policy manual and asks a question about page 31. The answer is wrong or vague. The cause traces straight back to this story. Attention gives every token access to every other token, but it spreads a limited budget of weight across all of them. More text means the weight per item is thinner and noise has more places to hide. You will cover the practical side in Lesson 4. For now, the plain explanation is: \"It can look at the whole thing, but it has to share its attention, and the more you give it, the thinner it gets.\"\n\n**2. \"Is this just autocomplete?\"** A sceptical roofing contractor will ask this. The honest answer is yes and no. Yes, at heart it predicts the next piece of text. No, because doing that well across billions of examples forced it to learn grammar, facts and reasoning patterns. Say: \"It is autocomplete the way a chess grandmaster is just moving pieces. The simple action hides a lot of learned skill.\"\n\n**3. \"Why can't we just train it on our data?\"** A client may think they can teach the model their pricing by feeding it their documents. Now you know training means adjusting billions of weights with huge amounts of data and compute. A small business does not retrain a model. It gives the model its documents to read at question time. That is why Retrieval Augmented Generation and good context design are the practical tools, and why you will spend later blocks on them.\n\n**A useful discovery question for any client call:** \"What do you imagine happens between you pressing send and the answer arriving?\" The answers tell you which myth they hold.",
+  "talk": "**Sentences you could say on stage or post on LinkedIn.**\n\n- \"Every AI assistant you use today descends from a 2017 paper with a cheeky title: Attention Is All You Need.\"\n- \"Before that, computers read text like a person with a sticky note. One word at a time, and the note kept getting overwritten.\"\n- \"Attention was the fix. Instead of memorising the whole sentence, let the model glance back at any word it needs.\"\n- \"The 2017 breakthrough was noticing that glancing back is the only trick you need. Throw out the sticky note and let everything look at everything.\"\n- \"That change made training parallel. Parallel meant faster. Faster meant you could feed it much more text. More text gave us ChatGPT.\"\n- \"Here is the thing to tell your team: the model does not store your pricing like a spreadsheet. It stores patterns in billions of numbers. Give it your pricing when you ask the question.\"\n\n**A LinkedIn post shape:** Open with the sticky-note image. Give three beats: the problem (forgetting), the fix (attention), the consequence (the transformer). Close with one business takeaway, for example \"that is why we feed your documents in at question time rather than hope the model remembers them\"."
+ },
+ "key_points": [
+  "A language model predicts the next piece of text. Doing that well forces it to learn grammar, facts and common sense.",
+  "A neuron multiplies inputs by weights, adds them and applies an activation function. The weights are the knowledge, and a model's parameter count is its number of weights.",
+  "Networks learn by guess, measure the loss, nudge the weights downhill (gradient descent), with backpropagation assigning blame to every weight. Backprop was popularised in 1986, not invented then.",
+  "Deep learning took off around 2012 through better training methods, big data and GPUs. AlexNet was a turning point, not the sole start.",
+  "Recurrent networks read one word at a time and carry a fixed-size hidden state. They are slow (serial) and forgetful (vanishing gradients).",
+  "The LSTM (1997) added a memory cell and gates so error signals survive over very long ranges, but it was still serial and still squeezed through a narrow channel.",
+  "Sequence-to-sequence translation (2014) crushed a whole sentence into one fixed vector, which became a bottleneck on long input.",
+  "Attention (Bahdanau, Cho and Bengio, 2014) lets the decoder take a weighted blend of every encoder state, with new weights at each output word.",
+  "Attention Is All You Need (2017) removed recurrence entirely. All positions are processed in parallel, which made training much faster and enabled today's large models.",
+  "The trade: the transformer gained parallelism and direct access to every word, but lost built-in word order and pays a cost that grows with the square of the text length."
+ ],
+ "terms": [
+  {
+   "term": "Language model",
+   "meaning": "A program that predicts the next piece of text given the text so far."
+  },
+  {
+   "term": "Neural network",
+   "meaning": "Layers of simple calculators (neurons) whose connection strengths are learned from examples."
+  },
+  {
+   "term": "Weight / parameter",
+   "meaning": "An adjustable number inside the network. The model's knowledge is stored in billions of these."
+  },
+  {
+   "term": "Activation function",
+   "meaning": "The bend applied to a neuron's total so stacked layers can learn curved patterns."
+  },
+  {
+   "term": "Loss",
+   "meaning": "A single number scoring how wrong the model's guess was."
+  },
+  {
+   "term": "Gradient descent",
+   "meaning": "Repeatedly nudging weights in the direction that lowers the loss, using the slope (gradient)."
+  },
+  {
+   "term": "Backpropagation",
+   "meaning": "Working backwards from the output error to compute how much each weight contributed to it."
+  },
+  {
+   "term": "Recurrent neural network (RNN)",
+   "meaning": "A network that reads a sequence one step at a time, carrying a hidden state forward."
+  },
+  {
+   "term": "LSTM",
+   "meaning": "Long Short-Term Memory: an RNN with a gated memory cell that survives long distances."
+  },
+  {
+   "term": "Encoder-decoder",
+   "meaning": "A design with one network that reads the input and one that writes the output."
+  },
+  {
+   "term": "Attention",
+   "meaning": "A weighted blend of earlier items, where the weights are computed fresh for each need."
+  },
+  {
+   "term": "Softmax",
+   "meaning": "A function turning any list of scores into positive weights that sum to 1."
+  },
+  {
+   "term": "Transformer",
+   "meaning": "The 2017 architecture built from attention layers and feed-forward layers, with no recurrence."
+  }
+ ],
+ "sources": [
+  {
+   "title": "Learning representations by back-propagating errors (Rumelhart, Hinton, Williams)",
+   "url": "https://inspirehep.net/literature/2171919",
+   "date": "1986-10",
+   "note": "Nature paper that popularised backprop. The maths had earlier roots, so say popularised."
+  },
+  {
+   "title": "A Fast Learning Algorithm for Deep Belief Nets (Hinton, Osindero, Teh)",
+   "url": "https://www.cs.utoronto.ca/~hinton/absps/ncfast.pdf",
+   "date": "2006-07",
+   "note": "Early deep learning revival paper, layer-by-layer training."
+  },
+  {
+   "title": "AlexNet (Krizhevsky, Sutskever, Hinton) and CHM source release",
+   "url": "https://computerhistory.org/blog/chm-releases-alexnet-source-code/",
+   "date": "2012-12",
+   "note": "15.3 percent top-5 error, 8 layers, about 60 million parameters, two GPUs. DanNet (2011) preceded it on smaller sets."
+  },
+  {
+   "title": "Long Short-Term Memory (Hochreiter and Schmidhuber)",
+   "url": "https://papers.baulab.info/papers/Hochreiter-1997.pdf",
+   "date": "1997-11",
+   "note": "Gated memory cells, constant error carousel. Forget gate date of 2000 is from a secondary source."
+  },
+  {
+   "title": "Sequence to Sequence Learning with Neural Networks (Sutskever, Vinyals, Le)",
+   "url": "https://arxiv.org/pdf/1409.3215",
+   "date": "2014-09",
+   "note": "Encoder-decoder LSTMs, BLEU 34.8 English to French, reversing the source helped."
+  },
+  {
+   "title": "Neural Machine Translation by Jointly Learning to Align and Translate (Bahdanau, Cho, Bengio)",
+   "url": "https://arxiv.org/pdf/1409.0473",
+   "date": "2014-09",
+   "note": "Introduced attention for translation. Published ICLR 2015."
+  },
+  {
+   "title": "Attention Is All You Need (Vaswani et al.)",
+   "url": "https://arxiv.org/abs/1706.03762",
+   "date": "2017-06",
+   "note": "Transformer, 28.4 BLEU on WMT 2014 English to German."
+  },
+  {
+   "title": "Scaling Laws for Neural Language Models (Kaplan et al.)",
+   "url": "https://arxiv.org/pdf/2001.08361",
+   "date": "2020-01",
+   "note": "Loss falls as a power law with size, data and compute."
+  }
+ ],
+ "practice": {
+  "prompt": "Write a 250-word explainer called 'Why AI forgets the start of a long email', aimed at the owner of a 12-person HVAC company. It must (a) use the sticky-note or receptionist analogy for recurrent networks, (b) say what attention changed, in one plain sentence, and (c) end with one practical tip for how they should feed long documents to an AI tool. No jargon without a one-line explanation.",
+  "answer_guide": "Marking guide. Award a point for each: (1) uses an everyday analogy for fixed-size memory being overwritten, (2) says attention lets the model look back at any earlier word instead of relying on one summary, (3) does not claim attention was invented in 2017, (4) defines any technical term used, (5) gives a concrete tip such as 'put the question and the key paragraph near the start or end, and trim the document to what matters', (6) stays under about 250 words and has no em dashes. Five or six points is strong. Under four, redo with the history table from section 10 beside you."
+ },
+ "quiz": [
+  {
+   "id": "q1",
+   "rung": 1,
+   "type": "mc",
+   "q": "What problem did the LSTM (1997) mainly address?",
+   "choices": [
+    "Networks being too slow to train on GPUs",
+    "Error signals fading away over long sequences",
+    "Translation needing two languages",
+    "Not having enough labelled images"
+   ],
+   "answer": "Error signals fading away over long sequences",
+   "why": "The vanishing gradient problem meant recurrent networks could not learn long-range links. The LSTM's memory cell carries information and error signals forward almost unchanged.",
+   "concept": "lstm-vanishing-gradient"
+  },
+  {
+   "id": "q2",
+   "rung": 2,
+   "type": "mc",
+   "q": "What did Bahdanau, Cho and Bengio's 2014 attention mechanism change in encoder-decoder translation?",
+   "choices": [
+    "It let the decoder blend all encoder states instead of relying on one summary vector",
+    "It replaced the encoder with a convolutional network",
+    "It trained the model without any labelled data",
+    "It made the decoder read the sentence backwards"
+   ],
+   "answer": "It let the decoder blend all encoder states instead of relying on one summary vector",
+   "why": "Attention removed the single-vector bottleneck by giving the decoder weighted access to every encoder state at each output word.",
+   "concept": "attention-bottleneck"
+  },
+  {
+   "id": "q3",
+   "rung": 2,
+   "type": "short",
+   "q": "In two or three sentences, explain how a network learns using loss, gradient descent and backpropagation.",
+   "answer": "The network guesses, a loss number measures how wrong the guess is, and backpropagation works backwards to find how much each weight contributed to the error. Gradient descent then nudges every weight a small step in the direction that lowers the loss. This repeats across huge amounts of data until the guesses are good.",
+   "why": "This is the core learning loop behind every model. A good answer names all three parts and the repetition.",
+   "concept": "gradient-descent-backprop"
+  },
+  {
+   "id": "q4",
+   "rung": 3,
+   "type": "short",
+   "q": "Why did dropping recurrence in the 2017 transformer make it possible to train on far more text, and what did it cost the design?",
+   "answer": "Without recurrence every position can be processed in parallel, which suits GPUs, so training is much faster and far more text can be used. The costs are that the model loses a built-in sense of word order, so position must be added explicitly, and attention cost grows with the square of the text length.",
+   "why": "The reasoning chain is serial processing, then slow training, then parallel attention, then a trade-off. Strong answers name both sides.",
+   "concept": "transformer-parallelism-tradeoff"
+  }
+ ],
+ "status": "unread"
+}
