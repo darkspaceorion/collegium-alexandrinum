@@ -2,8 +2,8 @@
  "course_id": "i-want-to-learn-ai-in-depth--mvn3nyyu",
  "depth": "deep",
  "student": {
-  "goal": "Understand AI deeply enough to walk into a company, hear how it works, choose the right tools, connect them, and explain AI with real depth (short of writing code).",
-  "why": "Building an AI automation consulting practice (Procilium, B2B, and Field Forge, blue-collar trades) and wants to speak about AI credibly on LinkedIn and at a local business conference.",
+  "goal": "Understand AI deeply enough to walk into a company, hear how it works, choose the right tools, connect them, and explain AI with real depth.",
+  "why": "Wants to help businesses, including trades and service firms, adopt AI automation, and to speak about AI credibly on LinkedIn and at a local business conference.",
   "level": "intermediate",
   "vocabulary": "expert (define every term on first use anyway)",
   "known": ["what a model is", "harness", "APIs, CLI and MCP (has used them)", "n8n", "daily Claude Code, Claude and ChatGPT user", "neural networks and reinforcement learning in outline", "next-token prediction idea", "RAG concept at expert level", "basic memory and CLAUDE.md files"],
@@ -69,7 +69,7 @@
    "options": [
     {"id": "make", "title": "Make", "summary": "Visual scenarios with strong branching (routers). Often cheaper per operation than Zapier. A good second tool for complex logic."},
     {"id": "zapier", "title": "Zapier", "summary": "Easiest to learn, biggest app catalogue. What many small businesses already pay for, so you will meet it in the field."},
-    {"id": "ghl", "title": "GoHighLevel workflows", "summary": "CRM plus marketing automation in one product, popular with agencies and trades. Fits your GHL bootcamp and Upwork GHL jobs."}
+    {"id": "ghl", "title": "GoHighLevel workflows", "summary": "CRM plus marketing automation in one product, popular with agencies and trades."}
    ],
    "lessons": [
     {"id": "l1", "title": "The platform landscape and how to choose", "minutes": 30, "focus": "n8n, Make, Zapier, GoHighLevel and others: pricing models (tasks, operations, executions), hosting, AI features, when each wins, the client's existing stack as the deciding factor. Comparison table."},
