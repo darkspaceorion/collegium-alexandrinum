@@ -6,6 +6,13 @@
 
 I designed it from 16 pages of handwritten notes on how people actually learn, then built it with Claude Code. It runs as a private web app on claude.ai, with no server to look after. The first course it built for me, "AI and business automation", has 13 blocks and 46 lessons, about 211,000 words, all researched and fact-checked.
 
+<p align="center">
+  <img src="docs/screenshots/atrium.jpg" alt="Atrium: the Dean suggests the next lesson" width="250">
+  <img src="docs/screenshots/lesson.jpg" alt="A lesson with a diagram and a check-yourself question" width="250">
+  <img src="docs/screenshots/quiz.jpg" alt="A Proctor quiz question" width="250">
+</p>
+<p align="center"><sub>The Atrium, where the Dean picks your next step · A lesson, with a diagram and a check-yourself question · A Proctor quiz</sub></p>
+
 ## Why I built it
 
 Most AI tutoring is one chatbot doing everything. The research on learning says that's the wrong shape:
